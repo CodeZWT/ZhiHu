@@ -5,7 +5,13 @@
 <div id="contain">
     <div id="contain_content">
                 这是首页
-
+        {%if questions%}
+        <ul>
+        {%for question in questions%}
+        <li>{{question.questionname}}</li>
+        {%endfor%}
+        </ul>
+        {%endif %}
      </div>
 </div>
     
