@@ -1,0 +1,9 @@
+#contain{
+	height: 600px;
+}
+#contain_content{
+	height: 600px;
+    width:1000px;
+    margin:0px auto;
+    background: red;
+}
