@@ -1,9 +1,173 @@
-#contain{
-	height: 600px;
+/* 清除浮动 */
+.cls_float{
+	clear:both
+	
 }
+/*顶替固定头部的高度  */
+.head_hight{
+	
+	height: 140px;
+}
+/* 头部样式 */
+a{
+	
+	color:#333;
+}
+#top a{
+	color:white;
+	
+}
+/*头部整个盒子 */
+#header{
+    border-bottom:#eee 1px solid; 
+    color: #D3F2FF;
+    width: 100%;
+    position: fixed;
+}
+/*头部内容 */
+#header_contain{
+    
+    font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    word-wrap: break-word;
+    text-align: right;
+    margin-bottom: 10px;
+    line-height:30px;
+    margin: 0px auto;
+    background: #373D41;
+    
+}
+/* 导航条 */
+#nav{
+
+    height: 80px;
+    border-bottom:  #EEEEEE 1px solid;
+    background: #eee;
+ }
+ #nav_box{
+    width:1200px;
+    background: #999;
+    margin: 0px auto;
+}
+/*logo  */
+ #nav_box img{
+    height: 80px;
+    line-height: 80px;
+    float: left;
+    
+}
+ #nav_ul{
+    width: 500px;
+    float: left;
+    margin-left: 40px;
+    
+ }
+ #nav_ul li a{
+    margin-left:5px;
+    display:block;
+    text-align:center;
+    padding: 0 10px;
+    font-size: 14px;
+    line-height: 80px;
+    color: #333;
+    text-decoration: none;
+    position: relative;
+    float: left;
+     font-family: \\5FAE\8F6F\96C5\9ED1,Microsoft Yahei,Hiragino Sans GB,tahoma,arial,\\5B8B\4F53;
+ }
+ 
+#nav_ul li  a:hover{
+
+     color: #00a2ca;
+     border-bottom: #00a2ca 2px solid;
+}   
+.nav_frist{
+   background: #00a2ca;
+}
+/*头部样式结束  */
+
+/* index页面的样式 */
+#contain{
+}
+/* index内容盒子 */
 #contain_content{
-	height: 600px;
+	/* height: 600px; */
     width:1000px;
     margin:0px auto;
-    background: red;
+    
+}
+/*  话题盒子*/
+.show_topic{
+    
+    border-bottom: #eee 1px solid;
+}
+
+.topic_question{
+	font-size: 22px;
+    color: #333;
+    text-decoration: none;
+}
+.topic_question a:hover{
+   color: #00a2ca;
+}   
+.topic_auth{
+	color: #999;
+    line-height: 34px;
+    overflow: hidden;
+    margin-top: 8px;
+	
+}
+.topic_content{
+	padding-top: 18px;
+    font-size: 14px;
+    line-height: 26px;
+    color: #666;
+    table-layout: fixed;
+    word-break: break-all;
+    overflow: hidden;
+}
+.topic_name{
+	
+	margin-bottom: 20px;
+	
+}
+.topic_name a{
+	display: inline-block;
+    margin: 15px 5px 0 0;
+    padding: 1px 8px 2px;
+    border: 1px solid #ccc;
+	color: #999;
+	border-radius: 15px;
+    text-decoration: none;
+    
+}
+.topic_name a:hover{
+	color: #00a2ca;
+	border:#00a2ca 1px solid;
+}
+/* 下一页和上一页的样式 */
+#next_pre{
+	
+	
+}
+#next_pre_content{
+	height:50px;
+	font-size:15px;
+	line-height:50px;
+	text-align:center;
+	
+	width:500px;
+	margin: 0px auto;
+	
+}
+#next_pre_content a{
+	height: 20px;
+	width: 20px;
+	margin-left:5px;
+	margin-right:5px;
+	border: #00a2ca 1px solid;
+}
+#next_pre_content a:hover{
+	
+	background: #00a2ca;
 }

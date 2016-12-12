@@ -4,14 +4,48 @@
 
 <div id="contain">
     <div id="contain_content">
-                这是首页
         {%if questions%}
-        <ul>
         {%for question in questions%}
-        <li>{{question.questionname}}</li>
+        <div class='show_topic'>
+            <div class="topic_question">
+                 <a href="#">{{question.questionname}}</a>
+             </div>
+            <div class="topic_auth">作者: 匿名 5人浏览</div>
+            <div class="topic_content">互联网时代，各种RPC框架盛行，细看各种框架，应用层面有各种变化，但是万变不离其宗，RPC最核心的部分基本都是一致的。那就是跟远程的服务器进行通信，像调用本地服务一样调用远程服务。然后在这些基础上可能会附加一些诸如，服务自动注册和发现，负载均衡，就近路由，调用链路记录，远程mock等等功能。今天想给大家分享的是，如果不考虑性能，API易用性，服务发现，负载均衡，环境隔离等其他因素，其实做一个基本功</div>
+            <p class="topic_name">
+                <a href="#">{{question.fromtopicname}}</a>
+            </p>
+        </div>    
+        
         {%endfor%}
-        </ul>
-        {%endif %}
+        {%endif%}
+        <!-- <div class='show_topic'>
+            <div class="topic_question">
+                 <a href="#">十分钟写个RPC框架</a>
+             </div>
+            <div class="topic_auth">作者: 匿名 5人浏览</div>
+            <div class="topic_content">互联网时代，各种RPC框架盛行，细看各种框架，应用层面有各种变化，但是万变不离其宗，RPC最核心的部分基本都是一致的。那就是跟远程的服务器进行通信，像调用本地服务一样调用远程服务。然后在这些基础上可能会附加一些诸如，服务自动注册和发现，负载均衡，就近路由，调用链路记录，远程mock等等功能。今天想给大家分享的是，如果不考虑性能，API易用性，服务发现，负载均衡，环境隔离等其他因素，其实做一个基本功</div>
+            <p class="topic_name">
+                <a href="#">Socket</a><a href="#">链路预测</a><a href="#">决策树</a>
+            </p>
+        </div>    -->
+        <div id='next_pre'>  
+             <div id='next_pre_content'>
+                <span id="next_pre_box">
+			         <!-- 如果当前是第一页，就不显示【上一页】链接 --> 
+		            <a href="/index">首页  </a>
+			        {% ifnotequal curPage 1 %}  
+			            <a href="?curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageUp" > 上一页  </a>  
+			        {% endifnotequal %}
+			                         第<label style="color:red;">{{ curPage }}</label>/{{ allPage }}页   
+			         <!-- 如果当前是最后一页，就不显示【下一页】链接 -->  
+			        {% ifnotequal curPage allPage %} 
+			            <a href="?curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageDown">下一页  </a>  
+			        {% endifnotequal %}
+			        <a href="?curPage={{ allPage }}&&allPage={{ allPage }}&&pageType=lastDown">尾页  </a>
+		        </span> 
+	        </div>
+        </div>
      </div>
 </div>
     
