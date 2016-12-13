@@ -125,3 +125,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+#使得session可以保存object类型
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'

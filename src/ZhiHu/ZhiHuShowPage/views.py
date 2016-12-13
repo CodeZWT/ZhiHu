@@ -7,7 +7,7 @@ from django.contrib.messages.storage import session
 
 #跳转到主页面
 def index(request):
-    loginUser = request.session.get("loginUser", "nobody")
+    loginUser = request.session.get("loginUser", "none")
     findResult = find(request, QuestionInfo)
     
     return render_to_response("index.html", { 'questions':findResult['datas'], 'allPage':findResult["allPage"], 'curPage':findResult["curPage"], 'loginUser':loginUser})
@@ -29,7 +29,7 @@ def login(request):
                 if loginUser.password == password:
                     
                     print loginUser.personname
-                    request.session['loginUser'] = loginUser.personname
+                    request.session["loginUser"] = loginUser
                     print 'ok'
                     return redirect("/index")
                 else:
@@ -38,23 +38,24 @@ def login(request):
     return render_to_response("login.html")
 #注销动作
 def logout(request):
-    del request.session['loginUser']  #删除session
+    del request.session["loginUser"]  #删除session
     return redirect("/index")
 #跳转到注册页面
 def register(request):
     if request.method == "POST":
         email = request.POST.get("email")
-        user = request.POST.get("user")
+        username = request.POST.get("user")
         password = request.POST.get("password")
         personname = request.POST.get("personName")
         try:
-            Person.objects.get(personid = user)
-            registerError = user + "用户名已经存在"
+            Person.objects.get(personid = username)
+            registerError = username + "用户名已经存在"
             return render_to_response("register.html", {'registerError':registerError})
         except:
-            user = Person(personid = user, password = password, personhashid = email, personname = personname)
+            user = Person(personid = username, password = password, personhashid = email, personname = personname)
             user.save()
-            request.session['loginUser'] = user.personname
+            
+            request.session["loginUser"] = user
             return redirect('/index')
     return render_to_response("register.html")
 
