@@ -99,6 +99,10 @@
 	margin-top: 20px;
 	display:block;
 	float: right;
+	color:#333;
+}
+.user_name{
+	color:#00a2ca;
 }
 .lable_class{
 	font-weight: 900;

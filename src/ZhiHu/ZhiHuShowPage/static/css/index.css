@@ -44,6 +44,7 @@ a{
     border-bottom:  #EEEEEE 1px solid;
     background: #eee;
  }
+
  #nav_box{
     width:1200px;
     background: #999;
@@ -57,7 +58,7 @@ a{
     
 }
  #nav_ul{
-    width: 500px;
+    width: 600px;
     float: left;
     margin-left: 40px;
     

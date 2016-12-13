@@ -15,7 +15,15 @@
 	           <li><a href="#">话题树</a></li>
 	           <li><a href="/login">登入</a></li>
 	           <li><a href="/register">注册</a></li>
+	           
 	       </ul>
+	       <div id="user_info">
+		       {%ifnotequal loginUser "nobody"%}
+		                  
+	                    <a href="/logout" class="user_detal" style="display: block;height: 80px;line-height:80px;float: right;margin-left: 20px;">退出</a>
+	                    <a href="/#" class="user_detal" style="display: block;height: 80px;line-height:80px;float: right;">欢迎<label style="color:red;font-size: 16px;font-weight: 900;">{{loginUser}}</label></a>
+	           {%endifnotequal%}
+           </div>
 	    </div>   
 	</div>
 </div>

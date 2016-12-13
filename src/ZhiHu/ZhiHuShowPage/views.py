@@ -1,35 +1,72 @@
 #coding:utf-8
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, redirect
 from ZhiHuShowPage.models import QuestionInfo
 from ZhiHuShowPage.models import AnswerQuestion
+from ZhiHuShowPage.models import Person
+from django.contrib.messages.storage import session
 
 #跳转到主页面
-def index(reqest):
+def index(request):
+    loginUser = request.session.get("loginUser", "nobody")
+    findResult = find(request, QuestionInfo)
     
-    findResult = find(reqest, QuestionInfo)
-   
-            
-    return render_to_response("index.html", { 'questions':findResult['datas'], 'allPage':findResult["allPage"], 'curPage':findResult["curPage"]})
-    
+    return render_to_response("index.html", { 'questions':findResult['datas'], 'allPage':findResult["allPage"], 'curPage':findResult["curPage"], 'loginUser':loginUser})
 #跳转到登入页面
-def login(reqest):
-    
+def login(request):
+    if request.method == "POST":
+        email = str(request.POST.get("email"))
+        password = str(request.POST.get("password"))
+        if email != ""and password != "":
+            print email, password
+#            loginUser = Person.objects.filter(personid__exact = email)
+            try:
+                loginUser = Person.objects.get(personid = email)
+            except:
+                loginError = "用户名不存在"
+                return render_to_response("login.html", {'loginError':loginError})
+            else: 
+                print loginUser
+                if loginUser.password == password:
+                    
+                    print loginUser.personname
+                    request.session['loginUser'] = loginUser.personname
+                    print 'ok'
+                    return redirect("/index")
+                else:
+                    loginError = "密码错误"
+                    return render_to_response("login.html", {'loginError':loginError})
     return render_to_response("login.html")
-
+#注销动作
+def logout(request):
+    del request.session['loginUser']  #删除session
+    return redirect("/index")
 #跳转到注册页面
-def register(reqest):
-    
+def register(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        user = request.POST.get("user")
+        password = request.POST.get("password")
+        personname = request.POST.get("personName")
+        try:
+            Person.objects.get(personid = user)
+            registerError = user + "用户名已经存在"
+            return render_to_response("register.html", {'registerError':registerError})
+        except:
+            user = Person(personid = user, password = password, personhashid = email, personname = personname)
+            user.save()
+            request.session['loginUser'] = user.personname
+            return redirect('/index')
     return render_to_response("register.html")
 
 #翻页的功能
-def find(reqest, dbName):
+def find(request, dbName):
     
     ONE_PAGE_OF_DATA = 15 
     result = {}
     try:  
-        curPage = int(reqest.GET.get('curPage', '1'))  
-        allPage = int(reqest.GET.get('allPage', '1'))  
-        pageType = str(reqest.GET.get('pageType', ''))  
+        curPage = int(request.GET.get('curPage', '1'))  
+        allPage = int(request.GET.get('allPage', '1'))  
+        pageType = str(request.GET.get('pageType', ''))  
     except ValueError:  
         curPage = 1  
         allPage = 1  
@@ -58,8 +95,9 @@ def find(reqest, dbName):
     result["curPage"] = curPage
     return result
 #跳转到问题详情页面
-def topic(reqest):
-    questionId = str(reqest.GET.get('id'))
+def topic(request):
+    loginUser = request.session.get("loginUser", "nobody")
+    questionId = str(request.GET.get('id'))
     answers = AnswerQuestion.objects.filter(questionid__exact = questionId)
     answersCount = len(answers)
-    return render_to_response("topic.html", {'answers':answers, 'answersCount':answersCount})
+    return render_to_response("topic.html", {'answers':answers, 'answersCount':answersCount, 'loginUser':loginUser})

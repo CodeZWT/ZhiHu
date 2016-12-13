@@ -22,10 +22,10 @@
                     <a class="user_info" href="#">
                          <label class="lable_class">回答者:</label>
                          {%ifnotequal  answer.personid None%}
-                         {{answer.personid}}
+                         <label class="user_name">{{answer.personid}}</label>
                          {%endifnotequal%}
                          {%ifequal  answer.personid "None"%}
-                                                                                匿名
+                         <label class="user_name">匿名</label>
                          {%endifequal%}
                                                                         
                     </a>

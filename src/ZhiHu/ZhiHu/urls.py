@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^login/', views.login, name = 'login'),
     url(r'^register/', views.register, name = 'register'),
     url(r'^topic/$', views.topic, name = 'topic'),
+    url(r'^logout/', views.logout, name = 'logout'),
 ]
