@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}话题详情{% endblock %}
+{% block content %}
+
+<div id="topic_detail">
+       {%if answers%}
+           <div class="ask">
+	           <span class="ask_word">问</span>
+	           <span class="ask_title">
+	               <a href="#">{{answers.0.questionname}}</a>
+	           </span>
+	           <p class="topic_name" style="margin-left: 40px;margin-bottom: 20px;">
+	               <label class="lable_class">所属话题:</label><a href="#">{{answers.0.fromtopicname}}</a>
+	                <label class="lable_class">回答的总人数:</label>{{answersCount}}
+	           </p>
+           </div>
+           <div class="answer">
+                <div id="answer_info">
+			       {%for answer in answers%}
+			       
+                   <div class="answer_content">
+                    <a class="user_info" href="#">
+                         <label class="lable_class">回答者:</label>
+                         {%ifnotequal  answer.personid None%}
+                         {{answer.personid}}
+                         {%endifnotequal%}
+                         {%ifequal  answer.personid "None"%}
+                                                                                匿名
+                         {%endifequal%}
+                                                                        
+                    </a>
+				       <!-- 回答的编号 -->
+					    <div class="widget-vote ">
+			                <button type="button" class="like" data-id="1020000004633831" data-type="answer" data-do="like" data-toggle="tooltip" data-placement="top" title="" data-original-title="答案对人有帮助，有参考价值">
+			                    <span class="sr-only"></span>
+			                </button>
+			                 <span class="count"><label class="lable_class">{{forloop.counter}}</label></span>
+			                <button type="button" class="hate" data-id="1020000004633831" data-type="answer" data-do="hate" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="答案没帮助，是错误的答案，答非所问">
+			                    <span class="sr-only"> </span>
+			                </button>
+	
+	                    </div>
+			           <p class="p_content">
+			                 &nbsp;&nbsp;{{answer.content}}
+			                 
+			           </p>
+		             
+			            
+		           </div>
+		       {%endfor%}
+		       </div>
+	       </div>
+       {%endif%}
+</div>
+
+{% endblock %}

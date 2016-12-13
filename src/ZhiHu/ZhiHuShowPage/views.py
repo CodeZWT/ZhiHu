@@ -1,12 +1,15 @@
 #coding:utf-8
 from django.shortcuts import render, render_to_response
-from ZhiHuShowPage.models import Question
+from ZhiHuShowPage.models import QuestionInfo
+from ZhiHuShowPage.models import AnswerQuestion
 
 #跳转到主页面
 def index(reqest):
     
-    findResult = find(reqest, Question)
-    return render_to_response("index.html", {'questions':findResult['datas'], 'allPage':findResult["allPage"], 'curPage':findResult["curPage"]})
+    findResult = find(reqest, QuestionInfo)
+   
+            
+    return render_to_response("index.html", { 'questions':findResult['datas'], 'allPage':findResult["allPage"], 'curPage':findResult["curPage"]})
     
 #跳转到登入页面
 def login(reqest):
@@ -18,6 +21,7 @@ def register(reqest):
     
     return render_to_response("register.html")
 
+#翻页的功能
 def find(reqest, dbName):
     
     ONE_PAGE_OF_DATA = 15 
@@ -53,3 +57,9 @@ def find(reqest, dbName):
     result["allPage"] = allPage
     result["curPage"] = curPage
     return result
+#跳转到问题详情页面
+def topic(reqest):
+    questionId = str(reqest.GET.get('id'))
+    answers = AnswerQuestion.objects.filter(questionid__exact = questionId)
+    answersCount = len(answers)
+    return render_to_response("topic.html", {'answers':answers, 'answersCount':answersCount})

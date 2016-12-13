@@ -22,6 +22,21 @@ class Answer(models.Model):
         db_table = 'answer'
 
 
+class AnswerQuestion(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    questionid = models.CharField(db_column='QuestionID', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    answerid = models.CharField(db_column='AnswerId', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    personid = models.CharField(db_column='PersonID', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    questionname = models.TextField(db_column='QuestionName', blank=True, null=True)  # Field name made lowercase.
+    fromtopicid = models.CharField(db_column='FromTopicId', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    fromtopicname = models.CharField(db_column='FromTopicName', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    content = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'answer_question'
+
+
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
 
@@ -147,6 +162,7 @@ class Followees(models.Model):
 class Person(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     personid = models.CharField(db_column='PersonID', max_length=100)  # Field name made lowercase.
+    password = models.CharField(max_length=20, blank=True, null=True)
     personhashid = models.CharField(db_column='PersonHashID', max_length=100, blank=True, null=True)  # Field name made lowercase.
     personname = models.CharField(db_column='PersonName', max_length=100, blank=True, null=True)  # Field name made lowercase.
     persongender = models.CharField(db_column='PersonGender', max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -192,6 +208,17 @@ class Question(models.Model):
         db_table = 'question'
 
 
+class QuestionInfo(models.Model):
+    questionid = models.CharField(db_column='QuestionID', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    questionname = models.TextField(db_column='QuestionName', blank=True, null=True)  # Field name made lowercase.
+    fromtopicid = models.CharField(db_column='FromTopicId', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    fromtopicname = models.CharField(db_column='FromTopicName', max_length=50, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'question_info'
+
+
 class Topic(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     father_topic = models.CharField(db_column='Father_Topic', max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -212,3 +239,26 @@ class TopicId(models.Model):
     class Meta:
         managed = False
         db_table = 'topic_id'
+
+
+class TopicIdIntroduction(models.Model):
+    id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    topicid = models.IntegerField(db_column='TopicID', blank=True, null=True)  # Field name made lowercase.
+    topicname = models.CharField(db_column='TopicName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    topicintroduction = models.CharField(db_column='TopicIntroduction', max_length=300, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'topic_id_introduction'
+
+
+class Topicfollow(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id_p = models.IntegerField(db_column='ID_P', blank=True, null=True)  # Field name made lowercase.
+    personid = models.CharField(db_column='PersonID', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    id_t = models.IntegerField(db_column='ID_T', blank=True, null=True)  # Field name made lowercase.
+    topicid = models.CharField(db_column='TopicID', max_length=100, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'topicfollow'
