@@ -1,0 +1,118 @@
+/* 清除浮动 */
+.cls_float{
+	clear:both;
+	
+}
+
+hr{
+	height:1px;
+	border:none;
+	border-top:1px groove skyblue;
+}
+
+
+#info{
+	width: 80%;
+}
+
+.div_header{
+	height: 40px;
+	line-height: 40px;
+	font-weight: bold;
+	font-size: 20px
+}
+
+.div_info{
+	height: 200px;
+}
+
+.info_nameid{
+	width: 35%;
+	height: 150px;
+	float: left;
+}
+.info_nameid_name{
+	height: 120px;
+	line-height: 100px;
+	font-size: 40px;
+	font-weight: bold;
+}
+.info_nameid_id{
+	font-size: 15px;
+}
+.info_content{
+	height: 150px;
+	width: 65%;
+	float: right;
+}
+.info_content_name{
+	width: 30%;
+	height: 15%;
+	line-height: 15%;
+	font-size: 15px;
+	float: left;
+}
+.info_content_text{
+	width: 70%;
+	height: 15%;
+	line-height: 15%;
+	font-size: 15px;
+	float: right;
+}
+.info_introduction{
+	height: 50px;
+	width: 100%;
+	float: left;
+	line-height: 50px;
+	font-size: 15px;
+	font-weight: bold;
+}
+.info_noexist{
+	width: 100%;
+	height: 90%;
+	height: 135px;
+	line-height: 135px;
+	font-size: 20px;
+	font-weight: bold;
+	font-style: italic;
+}
+.temp_col{
+	height: 25px;
+	width: 60%;
+}
+.temp_row{
+	width: 10%;
+	float: left;
+}
+
+
+
+#content{
+	width: 80%;
+		clear:both;
+	
+}
+
+
+
+
+.recommend_topic{
+	width: 45%;
+
+	float: left;
+}
+.recommend_followees{
+	width: 53%;
+	float: right;
+}
+
+.follow_topic{
+	width: 30%;
+	height: 1000px;
+	float: right;
+}
+.follow_topic_content{
+	width: 90%;
+	height: 1000px;
+	float: right;
+}
