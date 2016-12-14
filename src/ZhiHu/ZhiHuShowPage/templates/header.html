@@ -10,11 +10,16 @@
 	       <img alt="知乎数据" src="../static/images/nav_logo.png" width="140">
 	       <ul id="nav_ul">
 	           <li class="nav_frist"><a href="/index">首页</a></li>
-	           <li><a href="/person">个人中心</a></li>
 	           <li><a href="#">算法指数</a></li>
 	           <li><a href="#">话题树</a></li>
-	           <li><a href="/login">登入</a></li>
-	           <li><a href="/register">注册</a></li>
+	           
+	           {%ifnotequal loginUser "none"%}
+	           <li><a href="/person">个人中心</a></li>
+	           {%endifnotequal%}
+	           {%ifequal loginUser "none"%}
+               <li><a href="/login">登入</a></li>
+               <li><a href="/register">注册</a></li>
+               {%endifequal%}
 	           
 	       </ul>
 	       <div id="user_info">

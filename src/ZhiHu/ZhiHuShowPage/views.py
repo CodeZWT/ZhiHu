@@ -31,7 +31,7 @@ def login(request):
                     print loginUser.personname
                     request.session["loginUser"] = loginUser
                     print 'ok'
-                    return redirect("/index")
+                    return redirect("/person")
                 else:
                     loginError = "密码错误"
                     return render_to_response("login.html", {'loginError':loginError})
@@ -56,7 +56,7 @@ def register(request):
             user.save()
             
             request.session["loginUser"] = user
-            return redirect('/index')
+            return redirect('/person')
     return render_to_response("register.html")
 
 #翻页的功能
@@ -97,7 +97,7 @@ def find(request, dbName):
     return result
 #跳转到问题详情页面
 def topic(request):
-    loginUser = request.session.get("loginUser", "nobody")
+    loginUser = request.session.get("loginUser", "none")
     questionId = str(request.GET.get('id'))
     answers = AnswerQuestion.objects.filter(questionid__exact = questionId)
     answersCount = len(answers)
