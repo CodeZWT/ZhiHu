@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %}知乎算法结果展示{% endblock %}
+{% block content %}
+    <script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
+   
+    <div id="myChart" style="margin:0px auto;margin-bottom:80px; height: 400px; width:800px; border: 1px solid #ccc; padding: 10px;"></div>
+ <script type="text/javascript">  
+            /* 
+            * 按需加载 
+            * 引入echart.js依赖的zrender.js, 再引入echart.js 
+            */  
+
+            require.config({  
+                packages: [  
+                    {  
+                        name: 'zrender',  
+                        location: '../static/zrender-2.1.0/src', // zrender与echarts在同一级目录  
+                        main: 'zrender'  
+                    },  
+                    {  
+                        name: 'echarts',  
+                        location: '../static/echarts-2.2.7/src',  
+                        main: 'echarts'  
+                    }  
+                ]  
+            });  
+         
+        /***/  
+       
+            option = {
+                title : {
+                    text: 'CN指标算法结果展示',
+                    subtext: '两层网络结构'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['CN']
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : ['0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1']
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                   
+                    {
+                        name:'CN',
+                        type:'bar',
+                        data:[0.881427721594,0.88255502677,0.881044765021,0.880806067817,0.879406603212,0.876782421178,0.872331201666,0.865974866151,0.84869646044,0.814469066032,0.600447650208],
+                        markPoint : {
+                            data : [
+                                {name : '最高值', value : 0.88255502677, xAxis: 2, yAxis: 0.88255502677, symbolSize:18},
+                                {name : '最高值', value : 0.600447650208, xAxis: 10, yAxis: 0.600447650208}
+                            ]
+                        },
+                        markLine : {
+                            data : [
+                                {type : 'average', name : '平均值'}
+                            ]
+                        }
+                    }
+                ]
+            };
+                                    
+               
+              
+            /* 
+            *按需加载 
+            */  
+            require(  
+                [  
+                    'echarts',  
+                    'echarts/chart/line', 
+                    'echarts/chart/bar',  
+                ],  
+                //渲染ECharts图表  
+                function DrawEChart(ec) {  
+
+                    //图表渲染的容器对象  
+                    var chartContainer = document.getElementById("myChart");  
+
+                    //加载图表  
+                    var myChart = ec.init(chartContainer);  
+						
+                    myChart.setOption(option);  
+                }  
+            );  
+
+        </script>
+
+   
+{% endblock %}

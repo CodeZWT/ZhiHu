@@ -1,7 +1,7 @@
 #coding:utf-8
 from django.conf.urls import url
 from django.contrib import admin
-from ZhiHuShowPage import views,views2
+from ZhiHuShowPage import views, views2
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -11,6 +11,9 @@ urlpatterns = [
     url(r'^register/', views.register, name = 'register'),
     url(r'^topic/$', views.topic, name = 'topic'),
     url(r'^logout/', views.logout, name = 'logout'),
+    url(r'^algorithmShow/', views.algorithmShow, name = 'algorithmShow'),
+    url(r'^topicTree/', views.topicTree, name = 'topicTree'),
+    url(r'^complexNet/', views.complexNet, name = 'complexNet'),
     
-    url(r'^person/$',views2.person,name = 'person'),
+    url(r'^person/$', views2.person, name = 'person'),
 ]
