@@ -11,7 +11,10 @@
             * 按需加载 
             * 引入echart.js依赖的zrender.js, 再引入echart.js 
             */  
-
+            var header=document.getElementById('header')
+            header.style.position='static'
+            head_hight=document.getElementById('head_hight')
+            head_hight.style.height='80px'
             require.config({  
                 packages: [  
                     {  

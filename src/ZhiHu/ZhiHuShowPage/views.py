@@ -7,6 +7,10 @@ from django.contrib.messages.storage import session
 from ZhiHuShowPage.models import PersonTopic
 from ZhiHuShowPage.models import RecommendFollow
 from ZhiHuShowPage.models import RecommendTopic
+from ZhiHuShowPage.models import AucComplex
+import json
+from django.http.response import HttpResponse
+
 
 
 #跳转到主页面
@@ -151,6 +155,26 @@ def topic(request):
 def algorithmShow(request):
     loginUser = request.session.get("loginUser", "none")
     
+    if request.method == "POST":
+        
+        val_name = request.POST.get('val_name', 'none')
+        
+        if  val_name == 'none'  or val_name == "":
+            return render_to_response("algorithmShow.html", {"loginUser":loginUser})
+        else:
+            print val_name
+            aucs = AucComplex.objects.filter(sim__exact = val_name)
+            jsonData = {}
+            param = []
+            auc = []
+            for p in aucs:
+                param.append(p.param)
+                auc.append(p.auc)
+            jsonData['param'] = param
+            jsonData['auc'] = auc
+#            return render_to_response("algorithmShow.html", {"loginUser":loginUser, "aucs":aucs})
+            return HttpResponse(json.dumps(jsonData), content_type = 'application/json')
+#            return HttpResponse(auc)
     return render_to_response("algorithmShow.html", {"loginUser":loginUser})
 
 #话题树展示
@@ -161,6 +185,7 @@ def topicTree(request):
 #话题树-复杂网络关系展示
 def complexNet(request):
     loginUser = request.session.get("loginUser", "none")
+    
     return render_to_response("complexNet.html", {"loginUser":loginUser})
 def userInfo(request):
     loginUser = request.session.get("loginUser", "none")

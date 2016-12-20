@@ -2,14 +2,325 @@
 {% block title %}知乎算法结果展示{% endblock %}
 {% block content %}
     <script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
-   
+    <script type="text/javascript" src="../static/js/jquery-1.9.1.min.js"></script>
     <div id="myChart" style="margin:0px auto;margin-bottom:80px; height: 400px; width:800px; border: 1px solid #ccc; padding: 10px;"></div>
  <script type="text/javascript">  
-            /* 
-            * 按需加载 
-            * 引入echart.js依赖的zrender.js, 再引入echart.js 
-            */  
+           
+            
 
+        </script>
+<style type="text/css">
+.row {
+
+  margin:0px auto;
+  margin-top: 20px;
+  width: 800px;
+}
+.block {
+  float: left;
+  height: 100px;
+  width: 60px;
+  margin-left: 35px;
+}
+.hovicon {
+
+  display: inline-block;
+  font-size: 18px;
+  line-height: 70px;
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+  border-radius: 70%;
+  text-align: center;
+  position: relative;
+  text-decoration: none;
+  z-index: 1;
+  color: #fff;
+}
+.hovicon.small {
+  font-size: 20px;
+  line-height: 45px;
+  width: 45px;
+  height: 45px;
+  margin: 7px;
+}
+.hovicon.mini {
+  font-size: 15px;
+  line-height: 32px;
+  width: 30px;
+  height: 30px;
+  margin: 7px;
+}
+.hovicon.auto-width {
+  width: auto;
+  height: auto;
+  padding: 15px;
+}
+.hovicon:after {
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  content: '';
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.hovicon:before {
+  speak: none;
+  font-size: 48px;
+  line-height: 90px;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  display: block;
+  -webkit-font-smoothing: antialiased;
+}
+/* Effect 1 */
+.hovicon.effect-1 {
+  background: #333;
+  -webkit-transition: background 0.2s, color 0.2s;
+  -moz-transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s;
+}
+.hovicon.effect-1:after {
+  top: -7px;
+  left: -7px;
+  padding: 7px;
+  box-shadow: 0 0 0 4px #fff;
+  -webkit-transition: -webkit-transform 0.2s, opacity 0.2s;
+  -webkit-transform: scale(0.8);
+  -moz-transition: -moz-transform 0.2s, opacity 0.2s;
+  -moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  transition: transform 0.2s, opacity 0.2s;
+  transform: scale(0.8);
+  opacity: 0;
+}
+/* Effect 1a */
+.hovicon.effect-1.sub-a:hover {
+  background: white;
+  color: #41ab6b;
+}
+.hovicon.effect-1.sub-a:hover i {
+  color: #41ab6b;
+}
+.hovicon.effect-1.sub-a:hover:after {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  opacity: 1;
+}
+/* Effect 1b */
+.hovicon.effect-1.sub-b:hover {
+  background: white;
+  color: #41ab6b;
+}
+.hovicon.effect-1.sub-b:hover i {
+  color: #41ab6b;
+}
+.hovicon.effect-1.sub-b:after {
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  transform: scale(1.2);
+}
+.hovicon.effect-1.sub-b:hover:after {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  opacity: 1;
+}
+
+
+</style>
+<script type="text/javascript">
+       /* 
+                  * 按需加载 
+                  * 引入echart.js依赖的zrender.js, 再引入echart.js 
+                  */  
+
+            var header=document.getElementById('header')
+            header.style.position='static'
+            head_hight=document.getElementById('head_hight')
+            head_hight.style.height='80px'
+           $(document).ready(function(){
+     
+            
+              $.ajax({
+                  type:"POST",
+                  data: {'val_name':$("#CN").attr('id') },
+                  url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                  cache: false,
+                  dataType: "html",
+                  success: function(auc, statues, xml){
+
+                        
+                        //auc = {{ auc|safe }}
+                        auc=JSON.parse(auc)
+                        show($("#CN").attr('id'),auc)
+                  },
+                  error: function(){
+                      alert("false");
+                  }
+
+              });
+
+            $('#CN').click(function(){
+                var val_name= $("#CN").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+
+                          auc=JSON.parse(auc)
+                        show(val_name,auc)  
+                    },
+                    error: function(){
+                        alert("false");
+                    }
+
+                });
+            } );
+            $('#Salton').click(function(){
+                 var val_name= $("#Salton").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+
+                           auc=JSON.parse(auc)
+                        show(val_name,auc)   
+                    },
+                    error: function(){
+                        alert("false");
+                    }
+
+                });
+            } );
+            $('#Jaccard').click(function(){
+                 var val_name= $("#Jaccard").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+
+                           auc=JSON.parse(auc)
+                        show(val_name,auc)   
+                    },
+                    error: function(){
+                        alert("false");
+                    }});
+            } );
+            
+            $('#Sorenson').click(function(){
+                var val_name= $("#Sorenson").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+
+                           auc=JSON.parse(auc)
+                        show(val_name,auc)    
+                    },
+                    error: function(){
+                        alert("false");
+                    }});
+            } );
+            $('#LHN_I').click(function(){
+                var val_name= $("#LHN_I").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+
+                           auc=JSON.parse(auc)
+                        show(val_name,auc)  
+                    },
+                    error: function(){
+                        alert("false");
+                    }});
+            } );
+            $('#AA').click(function(){
+                var val_name= $("#AA").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+
+                          auc=JSON.parse(auc)
+                        show(val_name,auc)   
+                    },
+                    error: function(){
+                        alert("false");
+                    }});
+            } );
+            $('#RA').click(function(){
+                 var val_name= $("#RA").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+
+                          auc=JSON.parse(auc)
+                        show(val_name,auc)   
+                    },
+                    error: function(){
+                        alert("false");
+                    }});
+            } );
+            $('#PA').click(function(){
+                 var val_name= $("#PA").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
+                $.ajax({
+                    type:"POST",
+                    data: {'val_name':val_name},
+                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(auc, statues, xml){
+                          auc=JSON.parse(auc)
+                        show(val_name,auc)  
+                    },
+                    error: function(){
+                        alert("false");
+                }});
+                
+            } );
+          
+            
+            
+            
+           
+          })
+    
+    function show(name,auc){
+          //字典
+          
             require.config({  
                 packages: [  
                     {  
@@ -26,17 +337,16 @@
             });  
          
         /***/  
-       
             option = {
                 title : {
-                    text: 'CN指标算法结果展示',
+                    text: name+'指标算法结果展示',
                     subtext: '两层网络结构'
                 },
                 tooltip : {
                     trigger: 'axis'
                 },
                 legend: {
-                    data:['CN']
+                    data:name
                 },
                 toolbox: {
                     show : true,
@@ -52,7 +362,7 @@
                 xAxis : [
                     {
                         type : 'category',
-                        data : ['0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1']
+                        data : auc['param']
                     }
                 ],
                 yAxis : [
@@ -63,9 +373,9 @@
                 series : [
                    
                     {
-                        name:'CN',
+                        name:name,
                         type:'bar',
-                        data:[0.881427721594,0.88255502677,0.881044765021,0.880806067817,0.879406603212,0.876782421178,0.872331201666,0.865974866151,0.84869646044,0.814469066032,0.600447650208],
+                        data:auc['auc'],
                         markPoint : {
                             data : [
                                 {name : '最高值', value : 0.88255502677, xAxis: 2, yAxis: 0.88255502677, symbolSize:18},
@@ -100,13 +410,40 @@
 
                     //加载图表  
                     var myChart = ec.init(chartContainer);  
-						
+            
                     myChart.setOption(option);  
                 }  
             );  
+    }
 
-        </script>
-    
-       
+</script>
+     <div class="row">
+        <div class="block">
+            <div class="hovicon effect-1 sub-a"  id="CN" value="CN">CN</div>
+        </div>
+        <div class="block">
+            <div class="hovicon effect-1 sub-b" id="Salton">Salton</div>
+        </div>
+         <div class="block">
+            <div class="hovicon effect-1 sub-a" id="Jaccard">Jaccard</div>
+        </div>
+        <div class="block">
+            <div class="hovicon effect-1 sub-b" id="Sorenson">Sorenson</div>
+        </div>
+         <div class="block">
+            <div class="hovicon effect-1 sub-a" id="LHN_I">LHN_I</div>
+        </div>
+        <div class="block">
+            <div class="hovicon effect-1 sub-b" id="AA">AA</div>
+        </div>
+         <div class="block">
+            <div class="hovicon effect-1 sub-a" id="RA">RA</div>
+        </div>
+        <div class="block">
+            <div class="hovicon effect-1 sub-b" id="PA">PA</div>
+        </div>
+         
+    </div>
+  <div class="cls_float"></div>
    
 {% endblock %}
