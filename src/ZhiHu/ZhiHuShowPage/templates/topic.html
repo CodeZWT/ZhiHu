@@ -29,16 +29,20 @@
                          {%endifequal%}
                                                                         
                     </a>
-				       <!-- 回答的编号 -->
+                    <!-- <div class="vote">
+					        <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+					        <span itemprop="upvoteCount" class="vote-count-post ">1</span>
+					        <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+					
+					</div> -->
+				        <!-- 回答的编号 -->
 					    <div class="widget-vote ">
-			                <button type="button" class="like" data-id="1020000004633831" data-type="answer" data-do="like" data-toggle="tooltip" data-placement="top" title="" data-original-title="答案对人有帮助，有参考价值">
-			                    <span class="sr-only"></span>
-			                </button>
+				        <div class="triangle-up" ></div>
+			                
 			                 <span class="count"><label class="lable_class">{{forloop.counter}}</label></span>
-			                <button type="button" class="hate" data-id="1020000004633831" data-type="answer" data-do="hate" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="答案没帮助，是错误的答案，答非所问">
-			                    <span class="sr-only"> </span>
-			                </button>
+			                
 	
+	                    <div class="triangle-down" ></div>
 	                    </div>
 			           <p class="p_content">
 			                 &nbsp;&nbsp;{{answer.content}}

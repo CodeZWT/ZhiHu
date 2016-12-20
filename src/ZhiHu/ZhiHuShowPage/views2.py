@@ -12,7 +12,7 @@ from ZhiHuShowPage.models import Question, Person, Topicfollow, TopicIdIntroduct
 
 
 #跳转至用户个人中心
-def person(request):
+def userIndex(request):
     #获取登入用户
     User = request.session.get("loginUser", "none")
     
@@ -27,4 +27,4 @@ def person(request):
         topicname = TopicIdIntroduction.objects.get(topicid = id)
         topic_list.append(topicname)
     topic_list = set(topic_list)
-    return render_to_response("person.html", {'person':tempperson, 'followTopic':topic_list, 'loginUser':User})
+    return render_to_response("userIndex.html", {'person':tempperson, 'followTopic':topic_list, 'loginUser':User})

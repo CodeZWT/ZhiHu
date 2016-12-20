@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}话题树{% endblock %}
+{% block content %}
+    <!-- 引入 echarts.js -->
+  <script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
+  <script type="text/javascript" src="../static/js/jquery-1.9.1.min.js"></script>
+       
+    <div id="myChart" style="height: 400px; width:800px; border: 1px solid #ccc; padding: 10px;"></div>
+ <script type="text/javascript">  
+            /* 
+            * 按需加载 
+            * 引入echart.js依赖的zrender.js, 再引入echart.js 
+            */  
+
+            require.config({  
+                packages: [  
+                    {  
+                        name: 'zrender',  
+                        location: '../static/zrender-2.1.0/src', // zrender与echarts在同一级目录  
+                        main: 'zrender'  
+                    },  
+                    {  
+                        name: 'echarts',  
+                        location: '../static/echarts-2.2.7/src',  
+                        main: 'echarts'  
+                    }  
+                ]  
+            });  
+         
+        /***/  
+      
+ // app.title = '力引导布局';
+    //var myChart = echarts.init(document.getElementById('myChart'));
+    //myChart.showLoading();
+	
+    
+     /*        
+     *按需加载 
+     */  
+     require(  
+         [  
+             'echarts',  
+             'echarts/chart/force' 
+
+         ],  
+         function getOption(echarts,xml) {
+             var graph = echarts.dataTool.gexf.parse(xml);
+
+             var categories = [];
+             for (var i = 0; i < 9; i++) {
+                 categories[i] = {
+                     name: '类目' + i
+                 };
+             }
+             graph.nodes.forEach(function (node) {
+                 node.itemStyle = null;
+                 node.symbolSize = 10;
+                 node.value = node.symbolSize;
+                 node.category = node.attributes.modularity_class;
+                 // Use random x, y
+                 node.x = node.y = null;
+                 node.draggable = true;
+             });
+             var option = {
+                 title: {
+                     text: 'Les Miserables',
+                     subtext: 'Default layout',
+                     top: 'bottom',
+                     left: 'right'
+                 },
+                 tooltip: {},
+                 legend: [{
+                     // selectedMode: 'single',
+                     data: categories.map(function (a) {
+                         return a.name;
+                     })
+                 }],
+                 animation: false,
+                 series : [
+                     {
+                         name: 'Les Miserables',
+                         type: 'graph',
+                         layout: 'force',
+                         data: graph.nodes,
+                         links: graph.links,
+                         categories: categories,
+                         roam: true,
+                         label: {
+                             normal: {
+                                 position: 'right'
+                             }
+                         },
+                         force: {
+                             repulsion: 100
+                         }
+                     }
+                 ]
+             }
+           
+                              
+         },
+         //渲染ECharts图表  
+         function DrawEChart(ec) {  
+        		   
+        	 $.get('json/les-miserables.gexf', getOption(ec), ec)       
+        	  //图表渲染的容器对象  
+             var chartContainer = document.getElementById("myChart");  
+
+             //加载图表  
+             var myChart = ec.init(chartContainer);  
+                 
+             myChart.setOption(option);  
+         }  
+     );       
+           
+
+        </script>
+
+   
+{% endblock %}

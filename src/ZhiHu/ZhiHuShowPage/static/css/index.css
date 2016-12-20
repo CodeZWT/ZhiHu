@@ -14,19 +14,19 @@ a{
 	color:#333;
 }
 #top a{
-	color:white;
+	color:#999;
 	
 }
 /*头部整个盒子 */
 #header{
-    border-bottom:#eee 1px solid; 
     color: #D3F2FF;
     width: 100%;
     position: fixed;
+    box-shadow: 1px 1px 1px 1px #ccc;
 }
 /*头部内容 */
 #header_contain{
-    
+   
     font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
     font-size: 14px;
     word-wrap: break-word;
@@ -34,13 +34,65 @@ a{
     margin-bottom: 10px;
     line-height:30px;
     margin: 0px auto;
-    background: #373D41;
+    background: #333;
+   
     
 }
+.head_user_info{
+	width: 120px;
+	height: 80px;
+	float: right;
+	
+}
+.img-responsive{
+    height: 40px;
+    width: 40px;
+    margin-top: 20px;
+    float: left;
+}
+.user_detal{
+	height: 80px;
+	display: block;
+	margin-left: 50px;
+	line-height: 80px;
+	font-size: 16px;
+	font-weight: 800;
+	font-family: "微软雅黑";
+}
+
+.head_user_detail{
+	width: 120px;
+	
+	position:absolute;
+	right:36px;
+	margin-top: 80px;
+	display: none;
+	background:#EAEAEA ;
+	
+}
+.head_user_detail ul li{
+	
+}
+.head_user_detail ul li a{
+	display:block;
+	height:30px;
+	line-height:30px;
+	color: #333;
+	font-size: 16px;
+   font-weight: 800px;
+   text-indent: 1.5em;
+   border-bottom: #eee 1px solid;
+	
+}
+.head_user_detail ul li a:hover{
+      color:white;
+      background: #CFCFCF;
+}
+
 /* 导航条 */
 #nav{
-
-    height: 80px;
+    
+    height: 81px;
     border-bottom:  #EEEEEE 1px solid;
     background: #eee;
  }
@@ -51,10 +103,10 @@ a{
     margin: 0px auto;
 }
 /*logo  */
- #nav_box img{
+.img-logo{
     height: 80px;
-    line-height: 80px;
-    float: left;
+    width:80px;
+    float: left; 
     
 }
  #nav_ul{

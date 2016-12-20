@@ -4,6 +4,10 @@ from ZhiHuShowPage.models import QuestionInfo
 from ZhiHuShowPage.models import AnswerQuestion
 from ZhiHuShowPage.models import Person
 from django.contrib.messages.storage import session
+from ZhiHuShowPage.models import PersonTopic
+from ZhiHuShowPage.models import RecommendFollow
+from ZhiHuShowPage.models import RecommendTopic
+
 
 #跳转到主页面
 def index(request):
@@ -27,7 +31,7 @@ def login(request):
                 if loginUser.password == password:
                     
                     request.session["loginUser"] = loginUser
-                    return redirect("/person")
+                    return redirect("/userIndex")
                 else:
                     loginError = "密码错误"
                     return render_to_response("login.html", {'loginError':loginError})
@@ -52,7 +56,7 @@ def register(request):
             user.save()
             
             request.session["loginUser"] = user
-            return redirect('/person')
+            return redirect('/userIndex')
     return render_to_response("register.html")
 
 #翻页的功能
@@ -146,6 +150,7 @@ def topic(request):
 #算法指标展示
 def algorithmShow(request):
     loginUser = request.session.get("loginUser", "none")
+    
     return render_to_response("algorithmShow.html", {"loginUser":loginUser})
 
 #话题树展示
@@ -157,4 +162,45 @@ def topicTree(request):
 def complexNet(request):
     loginUser = request.session.get("loginUser", "none")
     return render_to_response("complexNet.html", {"loginUser":loginUser})
+def userInfo(request):
+    loginUser = request.session.get("loginUser", "none")
+    if loginUser == 'none':
+        return redirect('/index')
+    #得到登入用户关注的话题名字
+    if loginUser != "none":
+        topicFollows = PersonTopic.objects.filter(personid__exact = loginUser.personid)
+        
+    return render_to_response('userInfo.html', {"loginUser":loginUser, "topicFollows":topicFollows})
+#跳转至用户个人中心
+def userIndex(request):
+    #获取登入用户
+    loginUser = request.session.get("loginUser", "none")
+    
+    if loginUser == 'none':
+        return redirect('/index')
+    else:
+        #得到登入用户关注的话题名字
+        topicFollows = PersonTopic.objects.filter(personid__exact = loginUser.personid)
+        #根用户关注的话题显示提问内容
+        loginUserTopic = []
+        if len(topicFollows) > 0:
+            #这里有待优化
+            for topic in topicFollows:
+                try:
+                    getTopic = AnswerQuestion.objects.filter(fromtopicid__exact = topic.topicid)#str(topic.topicid)
+                    
+                    if len(getTopic) > 0:
+                        
+                        loginUserTopic.append(getTopic[0:1][0])
+                except:
+                    continue
+           
+            #获取推荐好友
+            recommendFollows = RecommendFollow.objects.filter(personid__exact = loginUser.id)
+            #获取推荐的话题
+            recommendTopics = RecommendTopic.objects.filter(personid__exact = loginUser.id)[0:10]
+        else:
+            loginUserTopic = []
+        
+    return render_to_response("userIndex.html", {'loginUser':loginUser, 'topicFollows':topicFollows, 'loginUserTopic':loginUserTopic, 'recommendFollows':recommendFollows, 'recommendTopics':recommendTopics})
 

@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^algorithmShow/', views.algorithmShow, name = 'algorithmShow'),
     url(r'^topicTree/', views.topicTree, name = 'topicTree'),
     url(r'^complexNet/', views.complexNet, name = 'complexNet'),
+    url(r'^userInfo/', views.userInfo, name = 'userInfo'),
     
-    url(r'^person/$', views2.person, name = 'person'),
+    
+    url(r'^userIndex/$', views.userIndex, name = 'userIndex'),
 ]

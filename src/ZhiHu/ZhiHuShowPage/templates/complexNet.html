@@ -3,7 +3,7 @@
 {% block content %}
     <script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
    
-    <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/jquery-1.9.1.min.js"></script>
    
     <div id="myChart" style="margin:0px auto;margin-bottom:80px;height: 400px; height: 400px; width:800px; border: 1px solid #ccc; padding: 10px;"></div>
  <script type="text/javascript">  
@@ -123,9 +123,11 @@ $.ajax({
             ribbonType: false
         };
 
-        myChart.setOption(option);
-        myChart.hideLoading();
+        /* myChart.setOption(option);
+        myChart.hideLoading(); */
+        
     }
+
 });
                     
                     

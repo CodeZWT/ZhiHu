@@ -37,6 +37,17 @@ class AnswerQuestion(models.Model):
         db_table = 'answer_question'
 
 
+class AucComplex(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    sim = models.CharField(max_length=10, blank=True, null=True)
+    param = models.FloatField(blank=True, null=True)
+    auc = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'auc_complex'
+
+
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
 
@@ -196,6 +207,17 @@ class PersonId(models.Model):
         db_table = 'person_id'
 
 
+class PersonTopic(models.Model):
+    id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    personid = models.CharField(db_column='PersonID', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    topicid = models.CharField(db_column='TopicID', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    topicname = models.CharField(db_column='TopicName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'person_topic'
+
+
 class Question(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     questionid = models.CharField(db_column='QuestionID', max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -217,6 +239,50 @@ class QuestionInfo(models.Model):
     class Meta:
         managed = False
         db_table = 'question_info'
+
+
+class RecommendFollow(models.Model):
+    id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    personid = models.IntegerField(db_column='PersonID', blank=True, null=True)  # Field name made lowercase.
+    refollow_id = models.IntegerField(db_column='reFollow_ID', blank=True, null=True)  # Field name made lowercase.
+    count_cn = models.IntegerField(blank=True, null=True)
+    cn_0 = models.IntegerField(blank=True, null=True)
+    cn_1 = models.IntegerField(blank=True, null=True)
+    cn_2 = models.IntegerField(blank=True, null=True)
+    cn_3 = models.IntegerField(blank=True, null=True)
+    cn_4 = models.IntegerField(blank=True, null=True)
+    cn_5 = models.IntegerField(blank=True, null=True)
+    cn_6 = models.IntegerField(blank=True, null=True)
+    cn_7 = models.IntegerField(blank=True, null=True)
+    cn_8 = models.IntegerField(blank=True, null=True)
+    cn_9 = models.IntegerField(blank=True, null=True)
+    personname = models.CharField(db_column='PersonName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'recommend_follow'
+
+
+class RecommendTopic(models.Model):
+    id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    personid = models.IntegerField(db_column='PersonID', blank=True, null=True)  # Field name made lowercase.
+    retopic_id = models.IntegerField(db_column='reTopic_ID', blank=True, null=True)  # Field name made lowercase.
+    cn_0 = models.IntegerField(blank=True, null=True)
+    cn_1 = models.IntegerField(blank=True, null=True)
+    cn_2 = models.IntegerField(blank=True, null=True)
+    cn_3 = models.IntegerField(blank=True, null=True)
+    cn_4 = models.IntegerField(blank=True, null=True)
+    cn_5 = models.IntegerField(blank=True, null=True)
+    cn_6 = models.IntegerField(blank=True, null=True)
+    cn_7 = models.IntegerField(blank=True, null=True)
+    cn_8 = models.IntegerField(blank=True, null=True)
+    cn_9 = models.IntegerField(blank=True, null=True)
+    topicid = models.IntegerField(db_column='TopicID', blank=True, null=True)  # Field name made lowercase.
+    topicname = models.CharField(db_column='TopicName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'recommend_topic'
 
 
 class Topic(models.Model):
@@ -242,7 +308,7 @@ class TopicId(models.Model):
 
 
 class TopicIdIntroduction(models.Model):
-    id = models.IntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     topicid = models.IntegerField(db_column='TopicID', blank=True, null=True)  # Field name made lowercase.
     topicname = models.CharField(db_column='TopicName', max_length=100, blank=True, null=True)  # Field name made lowercase.
     topicintroduction = models.CharField(db_column='TopicIntroduction', max_length=300, blank=True, null=True)  # Field name made lowercase.
@@ -254,9 +320,9 @@ class TopicIdIntroduction(models.Model):
 
 class Topicfollow(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    id_p = models.IntegerField(db_column='ID_P', blank=True, null=True)  # Field name made lowercase.
+    id_p = models.IntegerField(db_column='ID_p', blank=True, null=True)  # Field name made lowercase.
     personid = models.CharField(db_column='PersonID', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    id_t = models.IntegerField(db_column='ID_T', blank=True, null=True)  # Field name made lowercase.
+    id_t = models.IntegerField(db_column='ID_t', blank=True, null=True)  # Field name made lowercase.
     topicid = models.CharField(db_column='TopicID', max_length=100, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
