@@ -2,7 +2,90 @@
 {% block title %}个人中心{% endblock %}
 {% block content %}
 
+
+<script type="text/javascript" src="../static/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		FollowHtml=''
+		FollowHtmlBox=''
+		function getFollow(){
+			if (FollowHtml==''){
+				$.get("/followPerson",function(data,status){
+	                followed=JSON.parse(data)
+	                $('.user_left_bottom_top').html("我关注的人")
+	                $(".user_left_bottom_bottom_b").css("display",'block');
+	                $(".user_left_bottom_bottom_a").css("display",'none');
+	                FollowHtmlBox=' <div class="user_left_bottom_bottom_box"></div>'
+	                $(".user_left_bottom_bottom_b").prepend(FollowHtmlBox)
+	                
+	                for(var i=0;i<followed.length;i++){
+	                    FollowHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name">'+followed[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
+	                    $(".user_left_bottom_bottom_b").prepend(FollowHtml)
+	                }
+	              });
+			}else{
+				$(".user_left_bottom_bottom_b").css("display",'block');
+                $(".user_left_bottom_bottom_a").css("display",'none');
+			}
+			
+		}
+		topicHtml=''
+	    topicHtmlBox=''
+		function getTopic(){
+			if(topicHtml==""){
+				 $.get("/followTopic",function(data,status){
+		                topics=JSON.parse(data)
+		                $('.user_left_bottom_top').html("我关注的话题")
+		                $(".user_left_bottom_bottom_a").css("display",'block');
+		                $(".user_left_bottom_bottom_b").css("display",'none');
+		                topicHtmlBox=' <div class="user_left_bottom_bottom_box"></div>'
+		                $(".user_left_bottom_bottom").prepend(topicHtmlBox)
+		                for(var i=0;i<topics.length;i++){
+		                    topicHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name">'+topics[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
+		                    $(".user_left_bottom_bottom_a").prepend(topicHtml)
+		                }
+		              });
+			}else{
+				$(".user_left_bottom_bottom_a").css("display",'block');
+                $(".user_left_bottom_bottom_b").css("display",'none');
+			}
+           
+        }
+		
+		getTopic()
+	    $('.followCount_div').click(function(){
+	    	
+	    	getFollow()
+	    })
+	    $('.followPerson').click(function(){
+	    	
+	    	
+	    	getFollow()
+	    })
+	     $('.news').click(function(){
+	    	
+	    	 getTopic()
+        }) 
+        
+        /* 获取导航栏的元素 */        
+        var nav_a=$('.user_left_top').children("ul").children("li").children("a")
+        nav_a.each(function(){
+        	$(this).click(function(){
+                
+        		nav_a.each(function(){
+        			   $(this).css("border-bottom","")
+        			   $(this).css("color","")
+        		 });
+        		$(this).css("border-bottom","#00a2ca 2px solid")
+        		$(this).css("color","#00a2ca")
+           }) 
+        })
+	})
+
+</script>
 <link rel="stylesheet" type="text/css" href="../static/css/userInfo.css">
+
+
 <div id="user_content">
 
 	<div id="user_head">
@@ -62,13 +145,13 @@
 		
 		<div class="user_left">
 			<div class="user_left_top">
-				<ul>
-					<li><a href="#">动态</a></li>
-					<li><a href="#">回答{{loginUser.personanswersnum}}</a></li>
-					<li><a href="#">分享0</a></li>
-					<li><a href="#">提问{{loginUser.personasksnum}}</a></li>
-					<li><a href="#">收藏{{loginUser.personcollectionsnum}}</a></li>
-					<li><a href="#">关注{{loginUser.personfolloweesnum}}</a></li>
+				<ul class="nav_ul">
+					<li><a href="javascript:void(0);" class="news">动态</a></li>
+					<li><a href="javascript:void(0);">回答{{loginUser.personanswersnum}}</a></li>
+					<li><a href="javascript:void(0);">分享0</a></li>
+					<li><a href="javascript:void(0);">提问{{loginUser.personasksnum}}</a></li>
+					<li><a href="javascript:void(0);">收藏{{loginUser.personcollectionsnum}}</a></li>
+					<li><a href="javascript:void(0);" class="followPerson">关注{{loginUser.personfolloweesnum}}</a></li>
 				</ul>
 
 			</div>
@@ -77,28 +160,22 @@
 				我的动态
 			</div>
 			<div class="user_left_bottom">
-				<div class="user_left_bottom_top">关注了话题</div>
+				<div class="user_left_bottom_top">我关注的话题</div>
 				
-				<div class="user_left_bottom_bottom">
-					{%if topicFollows%}
-					{%for topic in topicFollows%}
-				    <div class="user_left_bottom_bottom_box">
-	                    <div class="user_left_bottom_bottom_img"></div>
-	                    <div class="user_left_bottom_bottom_cont">
-	                        <div class="topic_name"> {{topic.topicname}}</div>
-	                        <div class="topic_detail">简介暂无..</div>
-	                    </div>
-	                </div>
-	                {%endfor%}
-	                {%endif%}
+				<div class="user_left_bottom_bottom_a">
+					
 				</div>
+				
+				<div class="user_left_bottom_bottom_b">
+                    
+                </div>
 			</div>
 
 		</div>
 		<div class="user_right">
 			
 			<div class="user_right_top">
-			    <a href="#" class="user_right_top_follow">
+			    <a href="javascript:void(0);" class="user_right_top_follow">
 			    	<div class="follow_div">关注了</div>
 					<div class="followCount_div">{{loginUser.personfolloweesnum}}</div>
 			    </a>
@@ -109,20 +186,20 @@
 			    </a>
 			</div>
 			<div class="user_right_bottom">
-				<a href="#">
+				<a href="javascript:void(0);">
 					<label>关注的话题</label>
-					<label class="user_right_bottom_count" >0</label>
+					<label class="user_right_bottom_count" >{{topicFollows.count}}</label>
 				</a>
-				<a href="#">
+				<a href="javascript:void(0);">
 					
 					<label>关注的专栏</label>
 					<label class="user_right_bottom_count">0</label>
 				</a>
-				<a href="#">
+				<a href="javascript:void(0);">
 					<label>关注的问题</label>
 					<label class="user_right_bottom_count">0</label>
 				</a>
-				<a href="#">
+				<a href="javascript:void(0);">
 					<label>关注的收藏夹</label>
 					<label class="user_right_bottom_count">{{loginUser.personcollectionsnum}}</label>
 				</a>

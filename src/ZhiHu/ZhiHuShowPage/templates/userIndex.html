@@ -2,6 +2,186 @@
 {% block title %}用户首页{% endblock %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="../static/css/userIndex.css">
+<script type="text/javascript" src="../static/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript">
+
+$(function() {
+	 //ajax向后台传送数据
+     function ajax_data(flag,followId,followName){
+          $.ajax({
+                type:"POST",
+                data: {'flag':flag,'followId':followId,'followName':followName},
+                url: "/userIndex/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                cache: false,
+                dataType: "html",
+                success: function(jsonData, statues, xml){
+
+                    //alert(jsonData) 
+                    
+                },
+                error: function(){
+                    alert("false");
+                }
+          });
+     }
+	 
+	 //alert($('.ask-title-follow').length)
+	$('.follow-person').click(function(){
+	
+		var el=$(this)
+		//得到关注的对象昵称或话题名称
+		followId=el.parent().prev().prev().children().attr('tips')
+		followName=el.parent().prev().prev().children().text()
+		//alert(followId,followName)
+		
+		//attr("'class", ""); //设置p元素的class为 "high"
+		el.text("已关注")
+		el.attr("disabled",true);
+		
+		ajax_data('follow-person',followId,followName)
+		//ajax_data()
+		
+	})
+	$('.follow-topic').click(function(){
+           
+        
+        var el=$(this)
+        //得到关注的对象昵称或话题名称
+       followId=el.parent().prev().prev().children().attr('tips')
+       followName=el.parent().prev().prev().children().text()
+       el.text("已关注")
+      
+       el.attr("disabled",true);
+       ajax_data('follow-topic',followId,followName)
+        //ajax_data()
+        
+    })
+	
+	var header=document.getElementById('header')
+	header.style.position='static'
+	head_hight=document.getElementById('head_hight')
+	head_hight.style.height='80px'
+	$.fn.manhua_hoverTips = function(options) {
+
+		var defaults = {				
+			position : "t",			//箭头指向上(t)、箭头指向下(b)、箭头指向左(l)、箭头指向右(r)
+			value : 23				//小箭头偏离左边和上边的位置			
+			
+		};
+		var options = $.extend(defaults,options);	
+		
+		var bid = parseInt(Math.random()*100000);	
+		var $this = $(this);
+		$("body").prepend('<div class="docBubble"  id="btip'+bid+'"><i class="triangle-'+options.position+'"></i><div class="tl"><div class="inner"><div class="cont"></div></div></div><div class="tr"></div><div class="followsName_title">前十个共同好友:</div><div id="followsName"></div></div>'
+			);
+		
+		for(i=0;i<10;i++){
+				$("#followsName").prepend('<a href="#" class="username'+i+'">暂无...</a>')
+			}
+		var $btip = $("#btip"+bid);
+		var $btipClose = $("#btipc"+bid);		
+		var offset,h ,w ;	
+		var timer;
+		
+		$this.die().live("mousemove",function(){
+		    
+			//得到用户列表
+			var list={{followData|safe}}
+			var topicJson={{topicJson|safe}}
+			//ajax请求数据
+			//alert($(this).text())
+			//userInfo=ajax_data($(this).text())
+			clearInterval(timer);
+		   // alert({{person|safe}})
+		    
+
+			offset = $(this).offset();
+			h = $(this).height();
+			w = $(this).width();	
+
+
+			//$(".cont").html($(this).attr("tips"));
+			
+			if ($this.attr('id')=="follows_tips"){
+				userMsg=list[$(this).text()].toString().split(",")
+				recommendName=list[$(this).text()][1]
+				$(".cont").html("昵称:"+userMsg[0].toString()+'<br/>性别:'+userMsg[1].toString()+'<br/>简介:'+userMsg[2].toString());
+				$(".tr").html("被关注数:"+userMsg[3].toString()+'<br/>回答数:'+userMsg[4].toString()+'<br/>文章数:'+userMsg[5].toString());
+				
+				for(i=0;i<10;i++){
+
+					$(".username"+i+"").html(recommendName[i].toString());
+				}
+
+				
+			}else if($this.attr('id')=="topics_tips"){
+				topicMsg=topicJson[$(this).text()]
+
+				// recommendName=list[$(this).text()][1]
+				
+				//alert(topicJson[$(this).text()][0][1])
+				$(".cont").html("话题名称:"+topicMsg[0][0]);
+				$(".tr").html("简介:"+topicMsg[0][1]);
+				//alert(topicJson[$(this).text()][1][0])
+				for(i=0;i<10;i++){
+
+					$(".username"+i+"").html(topicJson[$(this).text()][1][i]);
+				}
+			}
+		
+			
+
+			switch(options.position){
+				case "t" ://当它是上面的时候
+					$(".triangle-t").css('left',options.value);
+					$btip.css({ "left":offset.left  ,  "top":offset.top+h+14  }).show();
+					break;
+				case "b" ://当它是下面的时候
+					$(".triangle-b").css('left',options.value);
+					$btip.css({ "left":offset.left ,  "top":offset.top-h-7-$btip.height()  }).show();
+					break;
+				case "l" ://当它是左边的时候		
+					$(".triangle-l").css('top',options.value);
+					$btip.css({ "left":offset.left+w+10  ,  "top":offset.top+h/2-7-options.value }).show();
+					break;
+				case "r" ://当它是右边的时候			
+					$(".triangle-r").css('top',options.value);
+					$btip.css({ "left":offset.left-20-$btip.width()  ,  "top":offset.top+h/2-7-options.value }).show();
+					break;
+			}
+				
+		});
+		$this.live("mouseout",function(){
+			 timer=setTimeout(function(){
+				$btip.hide();
+			},500)
+		});
+		
+		$btip.live("mousemove",function(){
+			clearInterval(timer);
+
+			$btip.show();
+		});
+		$btip.live("mouseout",function(){
+			 timer=setTimeout(function(){
+				$btip.hide();
+			},500)
+				 
+		});
+		$btipClose.live("click",function(e){
+		  $btip.hide();	
+		});		
+	}
+
+	//$("#tb").manhua_hoverTips({position : "r"});//改变了显示的位置参数
+	$("#topics_tips").manhua_hoverTips({position : "b"});//改变了显示的位置参数
+	
+	$("#follows_tips").manhua_hoverTips({position : "r"});//改变了显示的位置参数
+
+});
+
+</script>
+
 <body>
 	<div class="user-index">
 		<div class="user-index-left">
@@ -90,13 +270,13 @@
 		                {{ forloop.counter }}
 		              </div>
 		              <div class="ask-conent">
-		                <a class="ask-title" href="#" >{{follows.personname}}</a>
+		                <a id="follows_tips" class="ask-title" href="#" tips="{{follows.refollow_id}}">{{follows.personname}}</a>
 
 		                
 		              </div>
 		              <div class="ask-count_cn">{{follows.count_cn}}</div>
 		              <div class="follow-recommend">
-		                <a class="ask-title" href="#" >关注</a>
+		                <button type="button" class="follow-person" >关注</button>
 		              </div>
 	            	</div>
 					{%endfor%}
@@ -121,12 +301,12 @@
 		                {{ forloop.counter }}
 		              </div>
 		              <div class="ask-conent">
-		                <a class="ask-title" href="#" >{{reTopics.topicname}}</a>
+		                <a  id="topics_tips" class="ask-title" href="#" tips="{{reTopics.retopic_id}}"  >{{reTopics.topicname}}</a>
 
 		              </div>
 		              <div class="ask-count_cn"></div>
 		              <div class="follow-recommend">
-		                <a class="ask-title" href="#" >关注</a>
+		                <button type="button" class="follow-topic" >关注</button>
 		              </div>
 	            	</div>
 
@@ -139,5 +319,4 @@
 		<div class="cls_float"></div>
 
 	</div>
-
 {% endblock %}

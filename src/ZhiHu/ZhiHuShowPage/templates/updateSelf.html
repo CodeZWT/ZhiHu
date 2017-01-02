@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}修改个人信息{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="../static/css/updateSelf.css">
+<script type="text/javascript">
+	$(function() {
+
+		 //ajax向后台传送数据
+	     function ajax_data(nickname,password){
+	          $.ajax({
+	                type:"POST",
+	                data: {'nickname':nickname,'password':password},
+	                url: "/updateSelf/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+	                cache: false,
+	                dataType: "html",
+	                success: function(auc, statues, xml){
+	                  $('.user_detal').text(nickname);
+	                   $('.flah_error').text("修改成功！");
+	                },
+	                error: function(){
+	                    $('.flah_error').text("修改失败！");
+	                }
+
+	          });
+	     }
+			$('#update').click(function(){
+		   		var nickname = $('#nickname').val();
+				var password = $('#password').val();
+			    if(nickname ==  null || nickname == ''){
+			         $('.flah_error').text("昵称不能为空");
+			         return false;
+			    }else if(password==null ||password==""){
+			    	$('.flah_error').text("密码不能为空");
+			         return false;
+			     }else if(password.length<6){
+			     	$('.flah_error').text("密码不能小于6位数");
+			         return false;
+			     }
+			     
+			     ajax_data(nickname,password)
+			     
+			    return true;
+          })
+})
+	
+ 
+</script>
+<div class="updateSelf">
+    <div class="updateSelf_content">
+
+			<div class="login form">
+				<div class="group">
+					<div class="group-ipt email" >
+						用户名:<input type="text" name="username" value="{{loginUser.personid}}" disabled="disabled" /><br/>
+					</div>
+					<div class="group-ipt email">
+						 <label>昵称 : </label><input type="text" name="nickname" id="nickname" class="ipt" placeholder="选择一个昵称" value="{{loginUser.personname}}"/><br/>
+					</div>
+                    <div class="group-ipt email">
+						 密码 : <input type="password" name="password" id="password" class="ipt" placeholder="设置新密码" value="{{loginUser.password}}"/>
+
+					</div>
+					
+				</div>
+            </div>
+            <div class="cls_float"></div>
+            <div class="errors_tips">
+            	<span tips="错误提示" class="flah_error"></span>
+            </div>
+            <div class="button">
+
+            	<input type="reset"  class="submit-btn" value="重置">
+				<button type="submit" class="submit-btn" id="update">修改</button>
+				<div class="cls_float"></div>
+			</div>       
+                
+    </div>
+</div>
+
+{% endblock %}

@@ -4,443 +4,184 @@
     <script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
     <script type="text/javascript" src="../static/js/jquery-1.9.1.min.js"></script>
     <div id="myChart" style="margin:0px auto;margin-bottom:80px; height: 400px; width:800px; border: 1px solid #ccc; padding: 10px;"></div>
- <script type="text/javascript">  
-           
-            
-
-        </script>
-<style type="text/css">
-.row {
-
-  margin:0px auto;
-  margin-top: 20px;
-  width: 800px;
-}
-.block {
-  float: left;
-  height: 100px;
-  width: 60px;
-  margin-left: 35px;
-}
-.hovicon {
-
-  display: inline-block;
-  font-size: 18px;
-  line-height: 70px;
-  cursor: pointer;
-  width: 70px;
-  height: 70px;
-  border-radius: 70%;
-  text-align: center;
-  position: relative;
-  text-decoration: none;
-  z-index: 1;
-  color: #fff;
-}
-.hovicon.small {
-  font-size: 20px;
-  line-height: 45px;
-  width: 45px;
-  height: 45px;
-  margin: 7px;
-}
-.hovicon.mini {
-  font-size: 15px;
-  line-height: 32px;
-  width: 30px;
-  height: 30px;
-  margin: 7px;
-}
-.hovicon.auto-width {
-  width: auto;
-  height: auto;
-  padding: 15px;
-}
-.hovicon:after {
-  pointer-events: none;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  content: '';
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-}
-.hovicon:before {
-  speak: none;
-  font-size: 48px;
-  line-height: 90px;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  display: block;
-  -webkit-font-smoothing: antialiased;
-}
-/* Effect 1 */
-.hovicon.effect-1 {
-  background: #333;
-  -webkit-transition: background 0.2s, color 0.2s;
-  -moz-transition: background 0.2s, color 0.2s;
-  transition: background 0.2s, color 0.2s;
-}
-.hovicon.effect-1:after {
-  top: -7px;
-  left: -7px;
-  padding: 7px;
-  box-shadow: 0 0 0 4px #fff;
-  -webkit-transition: -webkit-transform 0.2s, opacity 0.2s;
-  -webkit-transform: scale(0.8);
-  -moz-transition: -moz-transform 0.2s, opacity 0.2s;
-  -moz-transform: scale(0.8);
-  -ms-transform: scale(0.8);
-  transition: transform 0.2s, opacity 0.2s;
-  transform: scale(0.8);
-  opacity: 0;
-}
-/* Effect 1a */
-.hovicon.effect-1.sub-a:hover {
-  background: white;
-  color: #41ab6b;
-}
-.hovicon.effect-1.sub-a:hover i {
-  color: #41ab6b;
-}
-.hovicon.effect-1.sub-a:hover:after {
-  -webkit-transform: scale(1);
-  -moz-transform: scale(1);
-  -ms-transform: scale(1);
-  transform: scale(1);
-  opacity: 1;
-}
-/* Effect 1b */
-.hovicon.effect-1.sub-b:hover {
-  background: white;
-  color: #41ab6b;
-}
-.hovicon.effect-1.sub-b:hover i {
-  color: #41ab6b;
-}
-.hovicon.effect-1.sub-b:after {
-  -webkit-transform: scale(1.2);
-  -moz-transform: scale(1.2);
-  -ms-transform: scale(1.2);
-  transform: scale(1.2);
-}
-.hovicon.effect-1.sub-b:hover:after {
-  -webkit-transform: scale(1);
-  -moz-transform: scale(1);
-  -ms-transform: scale(1);
-  transform: scale(1);
-  opacity: 1;
-}
-
-
-</style>
+<link rel="stylesheet" href="../static/css/algorithmShow.css">
 <script type="text/javascript">
-       /* 
-                  * 按需加载 
-                  * 引入echart.js依赖的zrender.js, 再引入echart.js 
-                  */  
 
-            var header=document.getElementById('header')
-            header.style.position='static'
-            head_hight=document.getElementById('head_hight')
-            head_hight.style.height='80px'
-           $(document).ready(function(){
-     
+      var header=document.getElementById('header')
+      header.style.position='static'
+      head_hight=document.getElementById('head_hight')
+      head_hight.style.height='80px'
+
+      $(document).ready(function(){
+            //默认显示CN数据
+            ajax_data("CN")
+            //获取所有的i元素
+            $("i").click(function(){
+                var el = $(this);
+                 ajax_data(el.attr('id'))
+            })
             
-              $.ajax({
-                  type:"POST",
-                  data: {'val_name':$("#CN").attr('id') },
-                  url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                  cache: false,
-                  dataType: "html",
-                  success: function(auc, statues, xml){
+      })
+      //ajax向后台传送数据
+     function ajax_data(val_name){
+          $.ajax({
+                type:"POST",
+                data: {'val_name':val_name},
+                url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                cache: false,
+                dataType: "html",
+                success: function(auc, statues, xml){
 
-                        
-                        //auc = {{ auc|safe }}
-                        auc=JSON.parse(auc)
-                        show($("#CN").attr('id'),auc)
-                  },
-                  error: function(){
-                      alert("false");
-                  }
+                    auc=JSON.parse(auc)
+                    show(val_name,auc)  
+                },
+                error: function(){
+                    alert("false");
+                }
 
-              });
-
-            $('#CN').click(function(){
-                var val_name= $("#CN").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-
-                          auc=JSON.parse(auc)
-                        show(val_name,auc)  
-                    },
-                    error: function(){
-                        alert("false");
-                    }
-
-                });
-            } );
-            $('#Salton').click(function(){
-                 var val_name= $("#Salton").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-
-                           auc=JSON.parse(auc)
-                        show(val_name,auc)   
-                    },
-                    error: function(){
-                        alert("false");
-                    }
-
-                });
-            } );
-            $('#Jaccard').click(function(){
-                 var val_name= $("#Jaccard").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-
-                           auc=JSON.parse(auc)
-                        show(val_name,auc)   
-                    },
-                    error: function(){
-                        alert("false");
-                    }});
-            } );
-            
-            $('#Sorenson').click(function(){
-                var val_name= $("#Sorenson").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-
-                           auc=JSON.parse(auc)
-                        show(val_name,auc)    
-                    },
-                    error: function(){
-                        alert("false");
-                    }});
-            } );
-            $('#LHN_I').click(function(){
-                var val_name= $("#LHN_I").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-
-                           auc=JSON.parse(auc)
-                        show(val_name,auc)  
-                    },
-                    error: function(){
-                        alert("false");
-                    }});
-            } );
-            $('#AA').click(function(){
-                var val_name= $("#AA").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-
-                          auc=JSON.parse(auc)
-                        show(val_name,auc)   
-                    },
-                    error: function(){
-                        alert("false");
-                    }});
-            } );
-            $('#RA').click(function(){
-                 var val_name= $("#RA").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-
-                          auc=JSON.parse(auc)
-                        show(val_name,auc)   
-                    },
-                    error: function(){
-                        alert("false");
-                    }});
-            } );
-            $('#PA').click(function(){
-                 var val_name= $("#PA").attr('id')             //获得form中用户输入的name 注意这里的id_name 与你html中的id一致
-                $.ajax({
-                    type:"POST",
-                    data: {'val_name':val_name},
-                    url: "/algorithmShow/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(auc, statues, xml){
-                          auc=JSON.parse(auc)
-                        show(val_name,auc)  
-                    },
-                    error: function(){
-                        alert("false");
-                }});
-                
-            } );
-          
-            
-            
-            
-           
-          })
-    
+          });
+     }
+     //求数据元素的下标
+     function getIndex(array,value){
+        j=0;
+        for (var i = 0; i < array.length; i++) {
+              if (array[i] == value)
+                  return j
+              else{
+                j++;
+              }
+          }
+     }
+    //将数据展示画面
     function show(name,auc){
-          //字典
-          
-            require.config({  
-                packages: [  
-                    {  
-                        name: 'zrender',  
-                        location: '../static/zrender-2.1.0/src', // zrender与echarts在同一级目录  
-                        main: 'zrender'  
-                    },  
-                    {  
-                        name: 'echarts',  
-                        location: '../static/echarts-2.2.7/src',  
-                        main: 'echarts'  
-                    }  
-                ]  
-            });  
-         
-        /***/  
-            option = {
-                title : {
-                    text: name+'指标算法结果展示',
-                    subtext: '两层网络结构'
-                },
-                tooltip : {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data:name
-                },
-                toolbox: {
-                    show : true,
-                    feature : {
-                        mark : {show: true},
-                        dataView : {show: true, readOnly: false},
-                        magicType : {show: true, type: ['line', 'bar']},
-                        restore : {show: true},
-                        saveAsImage : {show: true}
-                    }
-                },
-                calculable : true,
-                xAxis : [
-                    {
-                        type : 'category',
-                        data : auc['param']
-                    }
-                ],
-                yAxis : [
-                    {
-                        type : 'value'
-                    }
-                ],
-                series : [
-                   
-                    {
-                        name:name,
-                        type:'bar',
-                        data:auc['auc'],
-                        markPoint : {
-                            data : [
-                                {name : '最高值', value : 0.88255502677, xAxis: 2, yAxis: 0.88255502677, symbolSize:18},
-                                {name : '最高值', value : 0.600447650208, xAxis: 10, yAxis: 0.600447650208}
-                            ]
-                        },
-                        markLine : {
-                            data : [
-                                {type : 'average', name : '平均值'}
-                            ]
-                        }
-                    }
-                ]
-            };
-                                    
-               
-              
-            /* 
-            *按需加载 
-            */  
-            require(  
-                [  
-                    'echarts',  
-                    'echarts/chart/line', 
-                    'echarts/chart/bar',  
-                ],  
-                //渲染ECharts图表  
-                function DrawEChart(ec) {  
+       /* 
+          * 按需加载 
+          * 引入echart.js依赖的zrender.js, 再引入echart.js 
+       */ 
+      //获取数据中的最大值和最值
+      maxAuc=Math.max.apply(null, auc['auc']);//最大值
+      minAuc=Math.min.apply(null, auc['auc']);//最大值
+      //获取数据中的最大值和最值的下标
+      maxAucIndex=getIndex(auc['auc'],maxAuc)
+      minAucIndex=getIndex(auc['auc'],minAuc)
+      require.config({  
+          packages: [  
+              {  
+                  name: 'zrender',  
+                  location: '../static/zrender-2.1.0/src', // zrender与echarts在同一级目录  
+                  main: 'zrender'  
+              },  
+              {  
+                  name: 'echarts',  
+                  location: '../static/echarts-2.2.7/src',  
+                  main: 'echarts'  
+              }  
+          ]  
+      });  
+   
+      /***/  
+      option = {
+          title : {
+              text: name+'指标算法结果展示',
+              subtext: '两层网络结构'
+          },
+          tooltip : {
+              trigger: 'axis'
+          },
+          legend: {
+              data:name
+          },
+          toolbox: {
+              show : true,
+              feature : {
+                  mark : {show: true},
+                  dataView : {show: true, readOnly: false},
+                  magicType : {show: true, type: ['line', 'bar']},
+                  restore : {show: true},
+                  saveAsImage : {show: true}
+              }
+          },
+          calculable : true,
+          xAxis : [
+              {
+                  type : 'category',
+                  data : auc['param']
+              }
+          ],
+          yAxis : [
+              {
+                  type : 'value'
+              }
+          ],
+          series : [
+             
+              {
+                  name:name,
+                  type:'bar',
+                  data:auc['auc'],
+                  markPoint : {
+                      data : [
+                          {name : '最高值', value : maxAuc, xAxis: maxAucIndex, yAxis: maxAuc, symbolSize:18},
+                          {name : '最低值', value : minAuc, xAxis: minAucIndex, yAxis: minAuc}
+                      ]
+                  },
+                  markLine : {
+                      data : [
+                          {type : 'average', name : '平均值'}
+                      ]
+                  }
+              }
+          ]
+      };
+        
+      /* 
+      *按需加载 
+      */  
+      require(  
+          [  
+              'echarts',  
+              'echarts/chart/line', 
+              'echarts/chart/bar',  
+          ],  
+          //渲染ECharts图表  
+          function DrawEChart(ec) {  
 
-                    //图表渲染的容器对象  
-                    var chartContainer = document.getElementById("myChart");  
+              //图表渲染的容器对象  
+              var chartContainer = document.getElementById("myChart");  
 
-                    //加载图表  
-                    var myChart = ec.init(chartContainer);  
-            
-                    myChart.setOption(option);  
-                }  
-            );  
+              //加载图表  
+              var myChart = ec.init(chartContainer);  
+      
+              myChart.setOption(option);  
+          }  
+       );  
     }
 
 </script>
      <div class="row">
         <div class="block">
-            <div class="hovicon effect-1 sub-a"  id="CN" value="CN">CN</div>
+            <i class="hovicon effect-1 sub-a"  id="CN" value="CN">CN</i>
         </div>
         <div class="block">
-            <div class="hovicon effect-1 sub-b" id="Salton">Salton</div>
+            <i class="hovicon effect-1 sub-b" id="Salton">Salton</i>
         </div>
          <div class="block">
-            <div class="hovicon effect-1 sub-a" id="Jaccard">Jaccard</div>
+            <i class="hovicon effect-1 sub-a" id="Jaccard">Jaccard</i>
         </div>
         <div class="block">
-            <div class="hovicon effect-1 sub-b" id="Sorenson">Sorenson</div>
+            <i class="hovicon effect-1 sub-b" id="Sorenson">Sorenson</i>
         </div>
          <div class="block">
-            <div class="hovicon effect-1 sub-a" id="LHN_I">LHN_I</div>
+            <i class="hovicon effect-1 sub-a" id="LHN_I">LHN_I</i>
         </div>
         <div class="block">
-            <div class="hovicon effect-1 sub-b" id="AA">AA</div>
+            <i class="hovicon effect-1 sub-b" id="AA">AA</i>
         </div>
          <div class="block">
-            <div class="hovicon effect-1 sub-a" id="RA">RA</div>
+            <i class="hovicon effect-1 sub-a" id="RA">RA</i>
         </div>
         <div class="block">
-            <div class="hovicon effect-1 sub-b" id="PA">PA</div>
+            <i class="hovicon effect-1 sub-b" id="PA">PA</i>
         </div>
          
     </div>

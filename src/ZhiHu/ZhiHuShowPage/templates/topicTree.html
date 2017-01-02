@@ -1,188 +1,238 @@
 {% extends 'base.html' %}
 {% block title %}话题树{% endblock %}
 {% block content %}
-    <script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
-   
-    <div id="myChart" style="margin:0px auto;margin-bottom:80px;height: 400px; width:800px; border: 1px solid #ccc; padding: 10px;">
-        
-    </div>
-    <div>
-           <a href="/complexNet" style="margin:0px auto;width:800px;">复杂网络展示图</a>
-    </div>
- <script type="text/javascript">  
-            /* 
-            * 按需加载 
-            * 引入echart.js依赖的zrender.js, 再引入echart.js 
-            */  
-            var header=document.getElementById('header')
-            header.style.position='static'
-            head_hight=document.getElementById('head_hight')
-            head_hight.style.height='80px'
-            require.config({  
-                packages: [  
-                    {  
-                        name: 'zrender',  
-                        location: '../static/zrender-2.1.0/src', // zrender与echarts在同一级目录  
-                        main: 'zrender'  
-                    },  
-                    {  
-                        name: 'echarts',  
-                        location: '../static/echarts-2.2.7/src',  
-                        main: 'echarts'  
-                    }  
-                ]  
-            });  
-         
-        /***/  
-       
-            var nodes = [];
-            var links = [];
-            var constMaxDepth = 2;
-            var constMaxChildren = 7;
-            var constMinChildren = 4;
-            var constMaxRadius = 10;
-            var constMinRadius = 2;
+<link rel="stylesheet" href="../static/css/topicTree.css">
 
-            function rangeRandom(min, max) {
-                return Math.random() * (max - min) + min;
-            }
+<script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
+<script type="text/javascript" src="../static/js/jquery-1.9.1.min.js"></script>
+    <div  align="center" class="searchBox">
+   		    <div class="form-wrapper cf">
+			    <input type="text" placeholder="请输入话题名" id="inputText" onfocus="Show();" onblur="Hide();" required>
+			    <button type="button"  id="search">Search</button>
+			</div>
+	   			<div id="display">
+	   				<div id ="list">
+	   					<ul id="ul">
+	   						<li id='li_55' onmousedown='getValue(this),Hide()' onmouseover='colorHigh(this)' onmouseout='colorLow(this)'>学科</li>
+	   					</ul>
+	   				</div>
+	    		</div>
+			</div>
+	<div id="myChart" style="margin:0px auto;margin-bottom:80px;height: 800px; width:1000px; border: 1px solid #ccc; padding: 10px;">
+	</div>
 
-            function createRandomNode(depth) {
-                var node = {
-                    name : 'NODE_' + nodes.length,
-                    value : rangeRandom(constMinRadius, constMaxRadius),
-                    // Custom properties
-                    id : nodes.length,
-                    depth : depth,
-                    category : depth === constMaxDepth ? 0 : 1
+<script type="text/javascript">
+
+  	 var header=document.getElementById('header')
+      header.style.position='static'
+      head_hight=document.getElementById('head_hight')
+      head_hight.style.height='50px'
+	  $(document).ready(function(){
+            //默认显示CN数据
+            ajax_data("【根话题】")
+           //ajax_data("学科")
+            //获取所有的i元素
+            $('#search').click(function(){
+                //alert($('#inputText').val())
+                if ($('#inputText').val()==""){
+                	ajax_data("【根话题】")
+                }else{
+                	ajax_data($('#inputText').val())	
                 }
-                nodes.push(node);
+                
+               // ajax_data($('#inputText').val())
+            });
+			
+			//从数据库模糊查找
+            $('#inputText')
+            .keyup(function(){
+            	ajax_input($('#inputText').val())
+            	add()
+            })
+            .blur(function(){
+            	var ul = document.getElementById("ul");
+            	ul.innerHTML = "";
+            });
 
-                return node;
-            }
 
-            function forceMockThreeData() {
-                var depth = 0;
-                var rootNode = {
-                    name : 'ROOT',
-                    value : rangeRandom(constMinRadius, constMaxRadius),
-                    // Custom properties
-                    id : 0,
-                    depth : 0,
-                    category : 2
-                }
-                nodes.push(rootNode);
+			var searchInput = $('#inputText'); 
+			//关闭浏览器提供给输入框的自动完成 
+			searchInput.attr('autocomplete','off');
+      })
+		function Show(){
+			var displayDiv = window.document.getElementById('display');
+			displayDiv.style.display = "block";
+		}
+		function Hide(){
+			var displayDiv = window.document.getElementById('display');
+			displayDiv.style.display = "none";
+		}
+		function colorHigh(obj){
+			var id = obj.id;
+			var li = document.getElementById(id);
+			li.style.color = "#ff3333";
+		}
+		function colorLow(obj){
+			var id = obj.id;
+			var li = document.getElementById(id);
+			li.style.color = "#000000";
+		}
+		function getValue(obj)
+		{
+			var id = obj.id;
+			var input = window.document.getElementById('inputText');
+			input.value = document.getElementById(id).innerHTML;
+		}
+    	function ajax_input(inputText){
+    		//alert(inputText)
+    		document.getElementById("ul").innerHTML = "";
+    		$.ajax({
+    			type:"POST",
+    			data:{'inputText':inputText},
+    			url:"/like/",
+    			cache:false,
+    			dataType:"html",
+    			success:function(data,status,xml){
+    				data=JSON.parse(data)
+    				if (data.length){
+    					//alert(data[0])
+    					for (var i=0;i<data.length;i++){
+    						li_id = 'li_'+i;
+    						str = "<li id='"+li_id+"' onmousedown='getValue(this),Hide()'  onmouseover='colorHigh(this)' onmouseout='colorLow(this)'>"+data[i]+"</li>"
+    						$("#ul").append(str)
+    					}
+    				}
+    			},
+    			error:function(){
+    				alert('输入数据不存在')
+    			}
+    		});
+    	}
+		function ajax_data(TopicName){
+	            $.ajax({
+	                type:"POST",
+	                data: {'TopicName':TopicName},
+	                url: "/topicTree/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+	                cache: false,
+	                dataType: "html",
+	                success: function(Data,status,xml){
+	                	data=JSON.parse(Data)
+	                	show(data['Nodes'],data['Links'])
+	                   
+	                },
+	                error: function(){
+	                    alert('请求数据不存在');
+	                }
+	        });
+	    }
+	    function show(nodes,links){
+	    	/* 
+		    alert(document.getElementById('inputText').value)
+		    * 按需加载 
+		    * 引入echart.js依赖的zrender.js, 再引入echart.js 
+		    */  
+		    require.config({  
+		        packages: [  
+		            {  
+		                name: 'zrender',  
+		                location: '../static/zrender-2.1.0/src', // zrender与echarts在同一级目录  
+		                main: 'zrender'  
+		            },  
+		            {  
+		                name: 'echarts',  
+		                location: '../static/echarts-2.2.7/src',  
+		                main: 'echarts'  
+		            }  
+		        ]  
+		    });  
+		    /***/  
+		    //var nodes = {{Nodes|safe}};
+		   // var links = {{Links|safe}};
+		    var constMaxRadius = 30;
+		    var constMinRadius = 15;
+		    option = {
+		        title : {
+		            text: '知乎话题树',
+		            subtext: '展示知乎话题之间的关系',
+		            x:'right',
+		            y:'bottom'
+		        },
+		        tooltip : {
+		            trigger: 'item',
+		            formatter: '{a} : {b}'
+		        },
+		        toolbox: {
+		            show : true,
+		            feature : {
+		                restore : {show: true},
+		                magicType: {show: true, type: ['force', 'chord']},
+		                saveAsImage : {show: true}
+		            }
+		        },
+		        legend: {
+		            x: 'left',
+		            data:['叶子节点','非叶子节点', '根节点']
+		        },
+		        series : [
+		            {
+		                type:'force',
+		                name : "话题名",
+		                ribbonType: false,
+		                categories : [
+		                    {
+		                        name: '叶子节点'
+		                    },
+		                    {
+		                        name: '非叶子节点'
+		                    },
+		                    {
+		                        name: '根节点'
+		                    }
+		                ],
+		                itemStyle: {
+		                    normal: {
+		                        label: {
+		                            show: true ,
+		                            textStyle:{color : 'black'}
+		                        },
+		                        nodeStyle : {
+		                            brushType : 'both',
+		                            borderColor : 'rgba(255,215,0,0.6)',
+		                            borderWidth : 1
+		                        }
+		                    }
+		                },
+		                minRadius : constMinRadius,
+		                maxRadius : constMaxRadius,
+		                coolDown: 0.995,
+		                steps: 10,
+		                nodes : nodes,
+		                links : links,
+		                steps: 1
+		            }
+		        ]
+		    }; 
+		    /**按需加载*/  
+	        require(  
+	        	[   
+	        		'echarts',  
+	        		'echarts/chart/tree',  
+	                'echarts/chart/force',
+	                'echarts/chart/chord'    ],  
+	            //渲染ECharts图表  
+	            function DrawEChart(ec)
+	            {
+	                //图表渲染的容器对象  
+	                var chartContainer = document.getElementById("myChart");  
+	                //加载图表  
+	                var myChart = ec.init(chartContainer);  
+	                myChart.setOption(option);
+	            }
+	        );  
 
-                function mock(parentNode, depth) {
-                    var nChildren = Math.round(rangeRandom(constMinChildren, constMaxChildren));
-                    
-                    for (var i = 0; i < nChildren; i++) {
-                        var childNode = createRandomNode(depth);
-                        links.push({
-                            source : parentNode.id,
-                            target : childNode.id,
-                            weight : 1 
-                        });
-                        if (depth < constMaxDepth) {
-                            mock(childNode, depth + 1);
-                        }
-                    }
-                }
-
-                mock(rootNode, 0);
-            }
-
-            forceMockThreeData();
-
-            option = {
-                title : {
-                    text: 'Force',
-                    subtext: 'Force-directed tree',
-                    x:'right',
-                    y:'bottom'
-                },
-                tooltip : {
-                    trigger: 'item',
-                    formatter: '{a} : {b}'
-                },
-                toolbox: {
-                    show : true,
-                    feature : {
-                        restore : {show: true},
-                        magicType: {show: true, type: ['force', 'chord']},
-                        saveAsImage : {show: true}
-                    }
-                },
-                legend: {
-                    x: 'left',
-                    data:['叶子节点','非叶子节点', '根节点']
-                },
-                series : [
-                    {
-                        type:'force',
-                        name : "Force tree",
-                        ribbonType: false,
-                        categories : [
-                            {
-                                name: '叶子节点'
-                            },
-                            {
-                                name: '非叶子节点'
-                            },
-                            {
-                                name: '根节点'
-                            }
-                        ],
-                        itemStyle: {
-                            normal: {
-                                label: {
-                                    show: false
-                                },
-                                nodeStyle : {
-                                    brushType : 'both',
-                                    borderColor : 'rgba(255,215,0,0.6)',
-                                    borderWidth : 1
-                                }
-                            }
-                        },
-                        minRadius : constMinRadius,
-                        maxRadius : constMaxRadius,
-                        coolDown: 0.995,
-                        steps: 10,
-                        nodes : nodes,
-                        links : links,
-                        steps: 1
-                    }
-                ]
-            };
-
-                    
-              
-            /* 
-            *按需加载 
-            */  
-            require(  
-                [  
-                    'echarts',  
-                    'echarts/chart/tree',  
-                    'echarts/chart/force',
-                    'echarts/chart/chord'
-                    
-                ],  
-                //渲染ECharts图表  
-                function DrawEChart(ec) {  
-
-                    //图表渲染的容器对象  
-                    var chartContainer = document.getElementById("myChart");  
-
-                    //加载图表  
-                    var myChart = ec.init(chartContainer);  
-						
-                    myChart.setOption(option);  
-                }  
-            );  
-
-        </script>
+	    }
+	    	
+</script>
 
    
 {% endblock %}
