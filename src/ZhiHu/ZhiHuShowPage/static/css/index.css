@@ -120,7 +120,7 @@ a{
     display:block;
     text-align:center;
     padding: 0 10px;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 80px;
     color: #333;
     text-decoration: none;
@@ -130,10 +130,10 @@ a{
  }
  
 #nav_ul li  a:hover{
-
+     font-weight:500;
      color: #00a2ca;
-     border-bottom: #00a2ca 2px solid;
-}   
+/*      border-bottom: #00a2ca 2px solid;
+ */}   
 .nav_frist{
    background: #00a2ca;
 }

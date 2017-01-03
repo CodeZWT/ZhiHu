@@ -11,7 +11,7 @@
             <div class="topic_question">
                  <a href="/topic?id={{ question.questionid }}">{{question.questionname}}</a>
              </div>
-            <div class="topic_auth">作者: 匿名 5人浏览{{ question.questionid }}</div>
+            <div class="topic_auth">作者: 匿名 5人浏览</div>
             <div class="topic_content">互联网时代，各种RPC框架盛行，细看各种框架，应用层面有各种变化，但是万变不离其宗，RPC最核心的部分基本都是一致的。那就是跟远程的服务器进行通信，像调用本地服务一样调用远程服务。然后在这些基础上可能会附加一些诸如，服务自动注册和发现，负载均衡，就近路由，调用链路记录，远程mock等等功能。今天想给大家分享的是，如果不考虑性能，API易用性，服务发现，负载均衡，环境隔离等其他因素，其实做一个基本功</div>
             <p class="topic_name">
                  <a href="#">{{question.fromtopicname}}</a>
@@ -24,4 +24,5 @@
         {% include 'dividePage.html' %}
 </div>
 </div>
+
 {% endblock %}

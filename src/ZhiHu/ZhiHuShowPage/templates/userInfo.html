@@ -17,9 +17,11 @@
 	                $(".user_left_bottom_bottom_a").css("display",'none');
 	                FollowHtmlBox=' <div class="user_left_bottom_bottom_box"></div>'
 	                $(".user_left_bottom_bottom_b").prepend(FollowHtmlBox)
+	                $('.followCount_div').html(followed.length)
+	                $('.followPersonNum').html(followed.length)
 	                
 	                for(var i=0;i<followed.length;i++){
-	                    FollowHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name">'+followed[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
+	                    FollowHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name" tips="'+followed[i][0]+'">'+followed[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
 	                    $(".user_left_bottom_bottom_b").prepend(FollowHtml)
 	                }
 	              });
@@ -41,7 +43,7 @@
 		                topicHtmlBox=' <div class="user_left_bottom_bottom_box"></div>'
 		                $(".user_left_bottom_bottom").prepend(topicHtmlBox)
 		                for(var i=0;i<topics.length;i++){
-		                    topicHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name">'+topics[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
+		                    topicHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name" tips="'+topics[i][0]+'">'+topics[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
 		                    $(".user_left_bottom_bottom_a").prepend(topicHtml)
 		                }
 		              });
@@ -52,7 +54,27 @@
            
         }
 		
-		getTopic()
+		 //取消关注
+	     function ajax_deleteFollows(flag,followId){
+	          $.ajax({
+	                type:"POST",
+	                data: {'flag':flag,'followId':followId},
+	                url: "/deleteFollows/", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+	                cache: false,
+	                dataType: "html",
+	                success: function(jsonData, statues, xml){
+
+	                    //window.location.reload();//刷新当前页面.
+	                    
+	                    
+	                },
+	                error: function(){
+	                    alert("false");
+	                }
+	          });
+	     }
+		getFollow()
+		
 	    $('.followCount_div').click(function(){
 	    	
 	    	getFollow()
@@ -67,6 +89,33 @@
 	    	 getTopic()
         }) 
         
+        
+        $('.topic_detail').click(function(){
+             alert(3)
+             //alert($(this).parent())
+        })
+        $(".topic_detail").on('click',function(){
+        	
+        	alert(1)
+        })
+        
+        //on方法要先找到原选择器（user_left_bottom_bottom_a),再找到动态添加的选择器（.user_left_bottom_bottom_img)
+		$(".user_left_bottom_bottom_a").on("click",".topic_detail",function(){
+			$(this).parent().prev().remove()
+	        $(this).parent().remove()
+	        ajax_deleteFollows('follow-topic',$(this).prev().attr('tips'))
+	        
+	    });
+		
+		//取消我关注的人
+		$(".user_left_bottom_bottom_b").on("click",".topic_detail",function(){
+        　　　          　
+        　　　            $(this).parent().prev().remove()
+        　　　              $(this).parent().remove()
+           ajax_deleteFollows('follow-person',$(this).prev().attr('tips'))
+            
+        });
+		
         /* 获取导航栏的元素 */        
         var nav_a=$('.user_left_top').children("ul").children("li").children("a")
         nav_a.each(function(){
@@ -80,6 +129,7 @@
         		$(this).css("color","#00a2ca")
            }) 
         })
+        
 	})
 
 </script>
@@ -151,7 +201,7 @@
 					<li><a href="javascript:void(0);">分享0</a></li>
 					<li><a href="javascript:void(0);">提问{{loginUser.personasksnum}}</a></li>
 					<li><a href="javascript:void(0);">收藏{{loginUser.personcollectionsnum}}</a></li>
-					<li><a href="javascript:void(0);" class="followPerson">关注{{loginUser.personfolloweesnum}}</a></li>
+					<li><a href="javascript:void(0);" class="followPerson">关注<label class="followPersonNum">{{loginUser.personfolloweesnum}}</label></a></li>
 				</ul>
 
 			</div>
@@ -160,7 +210,7 @@
 				我的动态
 			</div>
 			<div class="user_left_bottom">
-				<div class="user_left_bottom_top">我关注的话题</div>
+				<div class="user_left_bottom_top"></div>
 				
 				<div class="user_left_bottom_bottom_a">
 					

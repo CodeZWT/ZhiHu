@@ -2,7 +2,6 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from ZhiHuShowPage import views, views2, adminViews
-
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index, name = 'index'),
@@ -40,5 +39,7 @@ urlpatterns = [
     url(r'addUser/', adminViews.addUser, name = 'addUser'),
     url(r'error/$', adminViews.error, name = 'error'),
     url(r'calendar/', adminViews.calendar, name = 'calendar'),
+    
+    url(r'deleteFollows/', views.deleteFollows, name = 'deleteFollows'),
     
 ]

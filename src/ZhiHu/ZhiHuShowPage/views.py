@@ -18,6 +18,7 @@ from ZhiHuShowPage.models import Question
 from ZhiHuShowPage.models import TopicId
 from ZhiHuShowPage.models import Followees
 from ZhiHuShowPage.models import FollowEncoder
+from ZhiHuShowPage.models import Topicfollow
 
 
 #跳转到主页面
@@ -205,9 +206,9 @@ def userInfo(request):
         return redirect('/index')
     #得到登入用户关注的话题名字
     if loginUser != "none":
-        topicFollows = PersonTopic.objects.filter(personid__exact = loginUser.personid)
+        topicFollows = Topicfollow.objects.filter(id_p__exact = loginUser.id)
     
-    
+        print len(topicFollows)
     return render_to_response('userInfo.html', {"loginUser":loginUser, "topicFollows":topicFollows})
 #跳转至用户个人中心
 def userIndex(request):
@@ -220,7 +221,7 @@ def userIndex(request):
     else:
         
         #得到登入用户关注的话题名字
-        topicFollows = PersonTopic.objects.filter(personid__exact = loginUser.personid)
+        topicFollows = Topicfollow.objects.filter(id_p = loginUser.id)
         #根用户关注的话题显示提问内容
         loginUserTopic = []
         if len(topicFollows) > 0:
@@ -229,7 +230,7 @@ def userIndex(request):
             if (topicids) > 10:
                 for rand_id in range(10):
                     topic_id = random.choice(topicids)
-                    getTopic = QuestionInfo.objects.filter(fromtopicid__exact = topic_id)
+                    getTopic = Question.objects.filter(fromtopicname__exact = topic_id)
                     if len(getTopic) > 0:
                         
                         loginUserTopic.append(getTopic[0:1][0])
@@ -237,7 +238,7 @@ def userIndex(request):
                         continue
             else:
                 for tid in topicids:
-                    getTopic = QuestionInfo.objects.filter(fromtopicid__exact = tid)
+                    getTopic = QuestionInfo.objects.filter(fromtopicname__exact = tid)
                     loginUserTopic.append(getTopic[0:1][0])
         else:
             loginUserTopic = []
@@ -304,9 +305,23 @@ def userIndex(request):
             else:
                 #得到topicID或者personID找到对应的id
                 if flag == 'follow-person':
-                    pass
+                    print flag, followName, followId
+                    Followees(person_id = loginUser.id, personid = loginUser.personname, id_f = followId, followeesid = followName).save()
+                    res = RecommendFollow.objects.filter(personid = loginUser.id, refollow_id = followId)
+                    if len(res) == 1:
+                        res.delete()
+                    else:
+                        print '删除关注的好友失败，查询数据超过2条'
                 elif flag == 'follow-topic':
-                    pass
+                    Topicfollow(id_p = loginUser.id, personid = loginUser.personname, id_t = followId, topicid = followName).save()
+                    
+                    res = RecommendTopic.objects.filter(personid = loginUser.id, retopic_id = followId)
+                    print flag, followName, followId
+                    if len(res) == 1:
+                        res.delete()
+                    else:
+                        print '删除关注的话题失败，查询数据超过2条'
+                    
                     
                 
     return render_to_response("userIndex.html", {'loginUser':loginUser, 'topicFollows':topicFollows, 'loginUserTopic':loginUserTopic, 'recommendFollows':recommendFollows, 'recommendTopics':recommendTopics, 'followData':json.dumps(jsonData), 'topicJson':json.dumps(topicJson)})# 'person':json.dumps(person, cls = PersonEncoder)})
@@ -336,10 +351,10 @@ def followTopic(request):
     #得到登入用户关注的人
     if loginUser != "none":
         if request.method == "GET":
-            topicFollows = PersonTopic.objects.filter(personid__exact = loginUser.personid)
+            topicFollows = Topicfollow.objects.filter(id_p = loginUser.id)
             topics = []
             for topic in topicFollows:
-                topics.append([topic.id, topic.topicname])
+                topics.append([topic.id_t, topic.topicid])
             
         return HttpResponse(json.dumps(topics, ensure_ascii = False, encoding = 'utf-8'))
      
@@ -369,3 +384,34 @@ def updateSelf(request):
                 request.session["loginUser"] = user
                 return  render_to_response('updateSelf.html', {'loginUser':loginUser})
     return  render_to_response('updateSelf.html', {'loginUser':loginUser})
+#删除关注好友和关注话题
+def deleteFollows(request):
+    loginUser = request.session.get("loginUser", "none")
+    if loginUser == 'none':
+        return redirect('/login')
+    else:
+        if request.method == "POST":
+            followId = request.POST['followId']
+            flag = request.POST['flag']
+            if followId == "":
+                pass
+                return HttpResponse(json.dumps('fail'))
+            else:
+                #得到topicID或者personID找到对应的id
+                if flag == 'follow-person':
+                    print flag, followId
+                    res = Followees.objects.filter(person_id = loginUser.id, id_f = followId)
+                    if len(res) == 1:
+                        res.delete()
+                    else:
+                        print '删除关注的话题失败，查询数据超过2条'
+                elif flag == 'follow-topic':
+                    
+                    res = Topicfollow.objects.filter(id_p = loginUser.id, id_t = followId)
+                    print flag, followId
+                    if len(res) == 1:
+                        res.delete()
+                    else:
+                        print '删除关注的话题失败，查询数据超过2条'
+                    
+                return HttpResponse(json.dumps('ok'))

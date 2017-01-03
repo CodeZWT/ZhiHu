@@ -7,7 +7,7 @@
 
 $(function() {
 	 //ajax向后台传送数据
-     function ajax_data(flag,followId,followName){
+     function ajax_data(flag,followId,followName,el){
           $.ajax({
                 type:"POST",
                 data: {'flag':flag,'followId':followId,'followName':followName},
@@ -17,6 +17,10 @@ $(function() {
                 success: function(jsonData, statues, xml){
 
                     //alert(jsonData) 
+                    //window.location.reload();//刷新当前页面.
+                    el.parent().parent().remove()
+                    if(flag=="follow-topic")
+                    $('.nav-topic-content').append('<a href="#">'+followName+'</a>')
                     
                 },
                 error: function(){
@@ -38,7 +42,8 @@ $(function() {
 		el.text("已关注")
 		el.attr("disabled",true);
 		
-		ajax_data('follow-person',followId,followName)
+		
+		ajax_data('follow-person',followId,followName,el)
 		//ajax_data()
 		
 	})
@@ -50,9 +55,9 @@ $(function() {
        followId=el.parent().prev().prev().children().attr('tips')
        followName=el.parent().prev().prev().children().text()
        el.text("已关注")
-      
        el.attr("disabled",true);
-       ajax_data('follow-topic',followId,followName)
+      
+       ajax_data('follow-topic',followId,followName,el)
         //ajax_data()
         
     })
@@ -194,9 +199,9 @@ $(function() {
 					<div class="head-nav-sanjiao"></div>
 					<div class="head-nav-nav">
 						<ul>
-							<li><a href="">提问</a></li>
-							<li><a href="">回答</a></li>
-							<li><a href="">写文章</a></li>
+							<li><a href="javascript:void();" class="ask_test" >提问</a></li>
+							<li><a href="/index">回答</a></li>
+							<li><a href="javascript:void();">写文章</a></li>
 						</ul>
 					</div>
 					<div class="cls_float" style="clear: both;"></div>
@@ -208,7 +213,7 @@ $(function() {
 					
 						{%for topic in topicFollows%}
 						
-							<a href="#">{{topic.topicname}}</a>
+							<a href="#">{{topic.topicid}}</a>
 						{%endfor%}
 
 					{%endif%}

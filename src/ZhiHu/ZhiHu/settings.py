@@ -26,7 +26,6 @@ SECRET_KEY = 'p3bq_rv-kozdy&o3@o!_@_evonm57s(02t&rlhjqe+uj@0b5rf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -127,4 +126,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 #使得session可以保存object类型
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
 
