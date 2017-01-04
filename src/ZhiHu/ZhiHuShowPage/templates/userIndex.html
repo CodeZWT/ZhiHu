@@ -7,7 +7,7 @@
 
 $(function() {
 	 //ajax向后台传送数据
-     function ajax_data(flag,followId,followName,el){
+     function ajax_data(flag,followId,followName){
           $.ajax({
                 type:"POST",
                 data: {'flag':flag,'followId':followId,'followName':followName},
@@ -15,12 +15,6 @@ $(function() {
                 cache: false,
                 dataType: "html",
                 success: function(jsonData, statues, xml){
-
-                    //alert(jsonData) 
-                    //window.location.reload();//刷新当前页面.
-                    el.parent().parent().remove()
-                    if(flag=="follow-topic")
-                    $('.nav-topic-content').append('<a href="#">'+followName+'</a>')
                     
                 },
                 error: function(){
@@ -42,9 +36,8 @@ $(function() {
 		el.text("已关注")
 		el.attr("disabled",true);
 		
-		
-		ajax_data('follow-person',followId,followName,el)
-		//ajax_data()
+		el.parent().parent().remove()
+		ajax_data('follow-person',followId,followName)
 		
 	})
 	$('.follow-topic').click(function(){
@@ -56,9 +49,9 @@ $(function() {
        followName=el.parent().prev().prev().children().text()
        el.text("已关注")
        el.attr("disabled",true);
-      
-       ajax_data('follow-topic',followId,followName,el)
-        //ajax_data()
+       el.parent().parent().remove()
+       $('.nav-topic-content').append('<a href="#">'+followName+'</a>')
+       ajax_data('follow-topic',followId,followName)
         
     })
 	
@@ -81,7 +74,7 @@ $(function() {
 			);
 		
 		for(i=0;i<10;i++){
-				$("#followsName").prepend('<a href="#" class="username'+i+'">暂无...</a>')
+				$("#followsName").prepend('<a href="#" target="_blank" class="username'+i+'">暂无...</a>')
 			}
 		var $btip = $("#btip"+bid);
 		var $btipClose = $("#btipc"+bid);		
@@ -94,10 +87,7 @@ $(function() {
 			var list={{followData|safe}}
 			var topicJson={{topicJson|safe}}
 			//ajax请求数据
-			//alert($(this).text())
-			//userInfo=ajax_data($(this).text())
 			clearInterval(timer);
-		   // alert({{person|safe}})
 		    
 
 			offset = $(this).offset();
@@ -116,14 +106,13 @@ $(function() {
 				for(i=0;i<10;i++){
 
 					$(".username"+i+"").html(recommendName[i].toString());
+					$(".username"+i+"").attr("href","/complexNet/?username="+recommendName[i].toString()+"");
 				}
 
 				
 			}else if($this.attr('id')=="topics_tips"){
 				topicMsg=topicJson[$(this).text()]
 
-				// recommendName=list[$(this).text()][1]
-				
 				//alert(topicJson[$(this).text()][0][1])
 				$(".cont").html("话题名称:"+topicMsg[0][0]);
 				$(".tr").html("简介:"+topicMsg[0][1]);
@@ -131,6 +120,7 @@ $(function() {
 				for(i=0;i<10;i++){
 
 					$(".username"+i+"").html(topicJson[$(this).text()][1][i]);
+					$(".username"+i+"").attr("href","/complexNet/?username="+topicJson[$(this).text()][1][i]+"");
 				}
 			}
 		

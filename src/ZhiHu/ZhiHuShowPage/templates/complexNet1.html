@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}话题树{% endblock %}
+{% block content %}
+ <script type="text/javascript" src="../static/echarts-2.2.7/src/chart/esl.js"></script>
+ <script type="text/javascript" src="../static/js/jquery-1.9.1.min.js"></script>
+ <div id="myChart" style="margin:0px auto;margin-bottom:80px;height: 400px; height: 400px; width:800px; border: 1px solid #ccc; padding: 10px;"></div>
+ <script type="text/javascript">  
+            /* 
+            * 按需加载 
+            * 引入echart.js依赖的zrender.js, 再引入echart.js 
+            */  
+            var header=document.getElementById('header')
+            header.style.position='static'
+            head_hight=document.getElementById('head_hight')
+            head_hight.style.height='80px'
+            require.config({  
+                packages: [  
+                    {  
+                        name: 'zrender',  
+                        location: '../static/zrender-2.1.0/src', // zrender与echarts在同一级目录  
+                        main: 'zrender'  
+                    },  
+                    {  
+                        name: 'echarts',  
+                        location: '../static/echarts-2.2.7/src',  
+                        main: 'echarts'  
+                    }  
+                ]  
+            });  
+         
+        /***/  
+       
+           
+option = {
+    title : {
+        text: 'webkit内核依赖',
+        subtext: '数据来自网络',
+        x:'right',
+        y:'bottom'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter : "{b}"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            restore : {show: true},
+            magicType: {
+                show: true,
+                type: ['force', 'chord'],
+                option: {
+                    chord: {
+                        minRadius : 2,
+                        maxRadius : 10,
+                        ribbonType: false,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    rotate: true
+                                },
+                                chordStyle: {
+                                    opacity: 0.2
+                                }
+                            }
+                        }
+                    },
+                    force: {
+                        minRadius : 5,
+                        maxRadius : 8,
+                        itemStyle : {
+                            normal : {
+                                label: {
+                                    show: false
+                                },
+                                linkStyle : {
+                                    opacity : 0.5
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            saveAsImage : {show: true}
+        }
+    },
+    legend : {
+        data : ['HTMLElement', 'WebGL', 'SVG', 'CSS', 'Other'],
+        orient : 'vertical',
+        x : 'left'
+    },
+    noDataEffect: 'none',
+    series :[{
+        //FIXME No data
+        type: 'force',
+    }],
+};
+$.ajax({
+    url: '../static/json/webkit-dep.json',
+    dataType: 'json',
+    success: function (data) {
+        option.series[0] = {
+            type: 'force',
+            name: 'webkit-dep',
+            itemStyle: {
+                normal : {
+                    linkStyle : {
+                        opacity : 0.5
+                    }
+                }
+            },
+            categories: data.categories,
+            nodes: data.nodes,
+            links: data.links,
+            minRadius: 5,
+            maxRadius: 8,
+            gravity: 1.1,
+            scaling: 1.1,
+            steps: 20,
+            large: true,
+            useWorker: true,
+            coolDown: 0.995,
+            ribbonType: false
+        };
+
+        /* myChart.setOption(option);
+        myChart.hideLoading(); */
+        
+    }
+
+});
+                    
+                    
+              
+            /* 
+            *按需加载 
+            */  
+            require(  
+                [  
+                    'echarts',  
+                    'echarts/chart/tree',  
+                    'echarts/chart/force',
+                    'echarts/chart/chord'
+                ],  
+                //渲染ECharts图表  
+                function DrawEChart(ec) {  
+
+                    //图表渲染的容器对象  
+                    var chartContainer = document.getElementById("myChart");  
+
+                    //加载图表  
+                    var myChart = ec.init(chartContainer);  
+						
+                    myChart.setOption(option);  
+                }  
+            );  
+
+        </script>
+
+{% endblock %}

@@ -198,8 +198,63 @@ def topicTree(request):
 #话题树-复杂网络关系展示
 def complexNet(request):
     loginUser = request.session.get("loginUser", "none")
-    
-    return render_to_response("complexNet.html", {"loginUser":loginUser})
+    if request.method == "POST":
+        userName = str(request.POST.get('userName', '王不二'))
+        nets = Followees.objects.filter(personid__exact = userName)
+        jsonData = {}
+        nodes = []
+        links = []
+        
+        nodeDir = {}
+        nodeDir['category'] = 0
+        nodeDir['name'] = nets[0].personid
+        nodeDir['value'] = 30
+        nodes.append(nodeDir)
+        for net in nets:
+            nodeDir = {}
+            nodeDir['category'] = random.randint(1, 2)
+            nodeDir['name'] = net.followeesid
+            nodeDir['value'] = random.randint(1, 10)
+            nodes.append(nodeDir)
+            
+            linkDir = {}
+            linkDir['source'] = net.followeesid
+            linkDir['target'] = net.personid
+            linkDir['weight'] = random.randint(1, 30)
+            linkDir['name'] = '关注'
+            links.append(linkDir)
+        
+        jsonData['nodes'] = nodes
+        jsonData['links'] = links
+        return HttpResponse(json.dumps(jsonData), content_type = 'application/json')
+    elif request.method == "GET":
+        userName = str(request.GET.get('username', '王不二'))
+        nets = Followees.objects.filter(personid__exact = userName)
+        jsonData = {}
+        nodes = []
+        links = []
+        nodeDir = {}
+        nodeDir['category'] = 0
+        nodeDir['name'] = userName
+        nodeDir['value'] = 30
+        nodes.append(nodeDir)
+        for net in nets:
+            nodeDir = {}
+            nodeDir['category'] = random.randint(1, 2)
+            nodeDir['name'] = net.followeesid
+            nodeDir['value'] = random.randint(1, 10)
+            nodes.append(nodeDir)
+            
+            linkDir = {}
+            linkDir['source'] = net.followeesid
+            linkDir['target'] = net.personid
+            linkDir['weight'] = random.randint(1, 30)
+            linkDir['name'] = '关注'
+            links.append(linkDir)
+        
+        jsonData['nodes'] = nodes
+        jsonData['links'] = links
+        return render_to_response("complexNet.html", {"loginUser":loginUser, 'jsonData':json.dumps(jsonData)})
 def userInfo(request):
     loginUser = request.session.get("loginUser", "none")
     if loginUser == 'none':
@@ -208,7 +263,6 @@ def userInfo(request):
     if loginUser != "none":
         topicFollows = Topicfollow.objects.filter(id_p__exact = loginUser.id)
     
-        print len(topicFollows)
     return render_to_response('userInfo.html', {"loginUser":loginUser, "topicFollows":topicFollows})
 #跳转至用户个人中心
 def userIndex(request):
@@ -246,11 +300,8 @@ def userIndex(request):
         #获取推荐好友
         recommendFollows = RecommendFollow.objects.filter(personid__exact = loginUser.id)
         #获取推荐的话题
-        
         recommendTopics = RecommendTopic.objects.filter(personid__exact = loginUser.id)[0:10]
-        
         jsonData = {}
-        
         for follow in recommendFollows:
             data = []
             friendName = []
@@ -305,7 +356,6 @@ def userIndex(request):
             else:
                 #得到topicID或者personID找到对应的id
                 if flag == 'follow-person':
-                    print flag, followName, followId
                     Followees(person_id = loginUser.id, personid = loginUser.personname, id_f = followId, followeesid = followName).save()
                     res = RecommendFollow.objects.filter(personid = loginUser.id, refollow_id = followId)
                     if len(res) == 1:
@@ -399,7 +449,6 @@ def deleteFollows(request):
             else:
                 #得到topicID或者personID找到对应的id
                 if flag == 'follow-person':
-                    print flag, followId
                     res = Followees.objects.filter(person_id = loginUser.id, id_f = followId)
                     if len(res) == 1:
                         res.delete()
@@ -408,10 +457,22 @@ def deleteFollows(request):
                 elif flag == 'follow-topic':
                     
                     res = Topicfollow.objects.filter(id_p = loginUser.id, id_t = followId)
-                    print flag, followId
                     if len(res) == 1:
                         res.delete()
                     else:
                         print '删除关注的话题失败，查询数据超过2条'
                     
                 return HttpResponse(json.dumps('ok'))
+def searchName(request):
+    if request.method == "POST":
+        username = request.POST.get('username', '王不二')
+        likeNames = Person.objects.filter(personname__contains = username)
+        names = []
+        for name in likeNames:
+            names.append(name.personname)
+        if len(names) > 9:
+            names = names[0:8]
+        
+        return HttpResponse(json.dumps(names), content_type = 'application/json')
+    else:
+        return redirect('/index')

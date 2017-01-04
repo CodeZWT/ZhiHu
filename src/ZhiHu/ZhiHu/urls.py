@@ -41,5 +41,6 @@ urlpatterns = [
     url(r'calendar/', adminViews.calendar, name = 'calendar'),
     
     url(r'deleteFollows/', views.deleteFollows, name = 'deleteFollows'),
+    url(r'searchName/', views.searchName, name = 'searchName'),
     
 ]
