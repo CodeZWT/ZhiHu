@@ -21,7 +21,7 @@
 	                $('.followPersonNum').html(followed.length)
 	                
 	                for(var i=0;i<followed.length;i++){
-	                    FollowHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name" tips="'+followed[i][0]+'">'+followed[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
+	                    FollowHtml='<div class="user_left_bottom_bottom_img" style="border-radius: 30px; background-image:url(../static/images/zhihu_img.jpg);background-repeat: no-repeat;background-size:cover;"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name" tips="'+followed[i][0]+'">'+followed[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
 	                    $(".user_left_bottom_bottom_b").prepend(FollowHtml)
 	                }
 	              });
@@ -43,7 +43,7 @@
 		                topicHtmlBox=' <div class="user_left_bottom_bottom_box"></div>'
 		                $(".user_left_bottom_bottom").prepend(topicHtmlBox)
 		                for(var i=0;i<topics.length;i++){
-		                    topicHtml='<div class="user_left_bottom_bottom_img"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name" tips="'+topics[i][0]+'">'+topics[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
+		                    topicHtml='<div class="user_left_bottom_bottom_img"  style="border-radius: 30px; background-image:url(../static/images/zhihu_img.jpg);background-repeat: no-repeat;background-size:cover;"></div><div class="user_left_bottom_bottom_cont"><div class="topic_name" tips="'+topics[i][0]+'">'+topics[i][1]+'</div><button type="button" class="topic_detail">取消关注</button></div>'
 		                    $(".user_left_bottom_bottom_a").prepend(topicHtml)
 		                }
 		              });

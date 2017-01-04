@@ -15,6 +15,7 @@ import numpy
 from django.http.response import HttpResponse
 from ZhiHuShowPage.models import AnswerQuestion
 from ZhiHuShowPage.models import QuestionInfo
+from ZhiHuShowPage.models import Answer
 
 #跳转至用户个人中心
 def userIndex(request):
@@ -76,6 +77,7 @@ def topicTree(request):
                         })
                     #第三层节点存入    
         else:
+            print 'No Child'
             Nodes, Links = Tree('【根话题】')
         return Nodes, Links 
     
@@ -86,7 +88,10 @@ def topicTree(request):
             return render_to_response("topicTree.html", {"loginUser":loginUser})
         else:
             
+            print 'post'
+            print TopicName
             Nodes, Links = Tree(TopicName)
+            print json.dumps(Nodes[0], ensure_ascii = False, encoding = 'utf-8')
             Data = {'Nodes':Nodes, 'Links':Links}
             return HttpResponse(json.dumps(Data), content_type = 'application/json')
     
@@ -98,20 +103,25 @@ def topicTree(request):
 
 def like(request):
     if request.method == 'POST':
+        print 'post'
         key = request.POST.get('inputText')
+        print 'key:' + json.dumps(key, ensure_ascii = False, encoding = 'utf-8')
         keyWords = TopicId.objects.filter(topicname__contains = key)
         data = []
         for i in keyWords:
             data.append(i.topicname)
         if len(data) > 5:
             data = data[0:5]
+        print json.dumps(data, ensure_ascii = False, encoding = 'utf-8')
         return HttpResponse(json.dumps(data))
     else:
+        print 'get'
         data = ['error']
         return HttpResponse(data)
     
 def ask(request):
     if request.method == 'POST':
+        print 'post'
         QuestionText = request.POST.get('inputText')
         fromTopicName = request.POST.get('topicName')
         try:
@@ -119,6 +129,7 @@ def ask(request):
         except:
             print "没有输入话题"
         maxQuestionID = QuestionInfo.objects.latest('questionid').questionid
+        print maxQuestionID
         newQuestion = QuestionInfo()
         newQuestion.questionid = int(maxQuestionID) + 1
         newQuestion.questionname = QuestionText
@@ -126,34 +137,61 @@ def ask(request):
         newQuestion.fromtopicname = fromTopicName
         newQuestion.save()
         return HttpResponse('Success')
+# def answer(request):
+#     if request.method == 'POST':
+#         answerID = request.POST.get('answerId')
+#         userID = request.POST.get('userId')
+#         Text = request.POST.get('Text')
+#         questionText = request.POST.get('questionText')
+#         print answerID,userID,Text,questionText
+#         question = AnswerQuestion.objects.get(id = answerID)
+#         print question.id
+#         print 'ID'
+#         questionID = question.questionid
+#         questionName = question.questionname
+#         fromTopicId = question.fromtopicid
+#         fromTopicName = question.fromtopicname
+#         maxAnswerID = AnswerQuestion.objects.latest('answerid').answerid
+#         personID = Person.objects.get(id = userID).personid
+#         answerQuestion = AnswerQuestion()
+#         answerQuestion.questionid = questionID
+#         answerQuestion.answerid = int(maxAnswerID) + 1
+#         answerQuestion.personid = personID
+#         answerQuestion.questionname = questionName
+#         answerQuestion.fromtopicid = fromTopicId
+#         answerQuestion.fromtopicname = fromTopicName
+#         answerQuestion.content = Text
+#         answerQuestion.save()
+#         print int(maxAnswerID) + 1
+#         return HttpResponse('Success')
 def answer(request):
     if request.method == 'POST':
         answerID = request.POST.get('answerId')
         userID = request.POST.get('userId')
         Text = request.POST.get('Text')
-        question = AnswerQuestion.objects.get(id = answerID)
-        questionID = question.questionid
-        questionName = question.questionname
-        fromTopicId = question.fromtopicid
-        fromTopicName = question.fromtopicname
-        maxAnswerID = AnswerQuestion.objects.latest('answerid').answerid
+        questionID = request.POST.get('questionID')
+        print answerID, userID, Text, questionID
+        question = QuestionInfo.objects.filter(questionid = questionID)
+#         print question[0].questionname
+#         print question[0].questionid
+        questionID = question[0].questionid
+        maxAnswerID = Answer.objects.latest('answerid').answerid
         personID = Person.objects.get(id = userID).personid
-               
-        answerQuestion = AnswerQuestion()
+        answerQuestion = Answer()
         answerQuestion.questionid = questionID
-        answerQuestion.answerid = int(maxAnswerID) + 1
         answerQuestion.personid = personID
-        answerQuestion.questionname = questionName
-        answerQuestion.fromtopicid = fromTopicId
-        answerQuestion.fromtopicname = fromTopicName
+        answerQuestion.answerid = int(maxAnswerID) + 1
         answerQuestion.content = Text
         answerQuestion.save()
+        print int(maxAnswerID) + 1
         return HttpResponse('Success')
 
 
 def likeQuestion(request):
     if request.method == 'POST':
+        print 'post'
         key = request.POST.get('inputText')
+        print 'key:' + json.dumps(key, ensure_ascii = False, encoding = 'utf-8')
         questions = QuestionInfo.objects.filter(questionname__contains = key)
         data = []
         for i in questions:
@@ -161,17 +199,21 @@ def likeQuestion(request):
         data = list(set(data))
         if len(data) > 5:
             data = data[0:5]
+        print json.dumps(data, ensure_ascii = False, encoding = 'utf-8')
         return HttpResponse(json.dumps(data))
     else:
+        print 'get'
         data = ['error']
         return HttpResponse(data)
 def searchQuestion(request):
     loginUser = request.session.get("loginUser", "none")
     if request.method == 'POST':
+        print 'post'
         QuestionText = request.POST.get('inputText')
         questions = QuestionInfo.objects.filter(questionname__contains = QuestionText)
         
         questionId = questions[0].questionid
+        print  QuestionText, len(questions), questionId
         return HttpResponse(json.dumps(questionId))
 #         answers = views.filter_by_questionId(request, AnswerQuestion, questionId)
 #         answersCount = answers["allPage"]*15

@@ -19,6 +19,7 @@ from ZhiHuShowPage.models import TopicId
 from ZhiHuShowPage.models import Followees
 from ZhiHuShowPage.models import FollowEncoder
 from ZhiHuShowPage.models import Topicfollow
+from ZhiHuShowPage.models import Answer
 
 
 #跳转到主页面
@@ -113,7 +114,7 @@ def find(request, dbName):
 #翻页的功能
 def filter_by_questionId(request, dbName, questionId):
     
-    ONE_PAGE_OF_DATA = 15 
+    ONE_PAGE_OF_DATA = 10 
     result = {}
     try:  
         curPage = int(request.GET.get('curPage', '1'))  
@@ -138,7 +139,7 @@ def filter_by_questionId(request, dbName, questionId):
     startPos = (curPage - 1) * ONE_PAGE_OF_DATA  
     endPos = startPos + ONE_PAGE_OF_DATA  
     
-    
+    #filterDatas = dbName.objects.filter(questionid__exact = questionId)
     filterDatas = dbName.objects.filter(questionid__exact = questionId)
     datas = filterDatas[startPos:endPos]
     if curPage == 1 and allPage == 1: #标记1  
@@ -156,14 +157,13 @@ def filter_by_questionId(request, dbName, questionId):
 def topic(request):
     loginUser = request.session.get("loginUser", "none")
     questionId = str(request.GET.get('id'))
-    answers = filter_by_questionId(request, AnswerQuestion, questionId)
-   
+    answers = filter_by_questionId(request, Answer, questionId)
+    questionInfo = QuestionInfo.objects.filter(questionid__exact = questionId)
     if answers["allPage"] == 0:
         answers = QuestionInfo.objects.filter(questionid__exact = questionId)[0:1]
         
-        return render_to_response("topic.html", {'answers':answers, 'allPage':0, 'curPage':0, 'answersCount':0, 'loginUser':loginUser})
-    answersCount = answers["allPage"]*15
-    return render_to_response("topic.html", {'answers':answers['datas'], 'allPage':answers["allPage"], 'curPage':answers["curPage"], 'answersCount':answersCount, 'loginUser':loginUser})
+        return render_to_response("topic.html", {'answers':answers, 'allPage':0, 'curPage':0, 'answersCount':0, 'loginUser':loginUser, 'questionInfo':questionInfo[0]})
+    return render_to_response("topic.html", {'answers':answers['datas'], 'allPage':answers["allPage"], 'curPage':answers["curPage"], 'loginUser':loginUser, 'questionInfo':questionInfo[0]})
 
 #算法指标展示
 def algorithmShow(request):
@@ -284,7 +284,7 @@ def userIndex(request):
             if (topicids) > 10:
                 for rand_id in range(10):
                     topic_id = random.choice(topicids)
-                    getTopic = Question.objects.filter(fromtopicname__exact = topic_id)
+                    getTopic = QuestionInfo.objects.filter(fromtopicname__exact = topic_id)
                     if len(getTopic) > 0:
                         
                         loginUserTopic.append(getTopic[0:1][0])
@@ -366,7 +366,6 @@ def userIndex(request):
                     Topicfollow(id_p = loginUser.id, personid = loginUser.personname, id_t = followId, topicid = followName).save()
                     
                     res = RecommendTopic.objects.filter(personid = loginUser.id, retopic_id = followId)
-                    print flag, followName, followId
                     if len(res) == 1:
                         res.delete()
                     else:

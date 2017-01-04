@@ -5,62 +5,62 @@
 <div id="topic_detail">
        {%if answers%}
            <div class="ask">
-	           <span class="ask_word">问</span>
-	           <span class="ask_title">
-	               {%if answers.0.questionname%}
-	                   <a href="#">{{answers.0.questionname}}</a>
-	               {%else%}
-	                   <a href="#">{{answers.questionname}}</a>
-	               {%endif%}
-	               
-	           </span>
-	           <p class="topic_name" style="margin-left: 40px;margin-bottom: 20px;">
-	               <label class="lable_class">所属话题:</label><a href="#">{{answers.0.fromtopicname}}</a>
-	                <label class="lable_class">回答的总人数:</label>{{answersCount}}
-	           </p>
+               <span class="ask_word">问</span>
+               <span class="ask_title">
+                   {%if questionInfo%}
+                       <a href="#" tips="{{questionInfo.questionid}}">{{questionInfo.questionname}}</a>
+                   {%else%}
+                       <a href="#" tips="{{questionInfo.questionid}}">{{questionInfo.questionname}}</a>
+                   {%endif%}
+                   
+               </span>
+               <p class="topic_name" style="margin-left: 40px;margin-bottom: 20px;">
+                   <label class="lable_class">所属话题:</label><a href="#">{{questionInfo.fromtopicname}}</a>
+                    <label class="lable_class">回答的总人数:</label>{{answers.count}}
+               </p>
            </div>
          
            {%if answersCount != 0%}
            
-	           <div class="answer">
-	                <div id="answer_info">
-	                   {%for answer in answers%}
-	                   
-	                   <div class="answer_content">
-	                    <a class="user_info" href="#">
-	                         <label class="lable_class">回答者:</label>
-	                         {%ifnotequal  answer.personid None%}
-	                         <label class="user_name">{{answer.personid}}</label>
-	                         {%endifnotequal%}
-	                         {%ifequal  answer.personid "None"%}
-	                         <label class="user_name">匿名</label>
-	                         {%endifequal%}
-	                                                                        
-	                    </a>
-	                    <!-- <div class="vote">
-	                            <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
-	                            <span itemprop="upvoteCount" class="vote-count-post ">1</span>
-	                            <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
-	                    
-	                    </div> -->
-	                        <!-- 回答的编号 -->
-	                        <div class="widget-vote ">
-	                        <div class="triangle-up" ></div>
-	                            
-	                             <span class="count"><label class="lable_class">{{forloop.counter}}</label></span>
-	                            
-	    
-	                        <div class="triangle-down" ></div>
-	                        </div>
-	                       <p class="p_content">
-	                             &nbsp;&nbsp;{{answer.content}}
-	                             
-	                       </p>
-	                     
-	                        
-	                   </div>
-	               {%endfor%}
-	               </div>
+               <div class="answer">
+                    <div id="answer_info">
+                       {%for answer in answers%}
+                       
+                       <div class="answer_content">
+                        <a class="user_info" href="#">
+                             <label class="lable_class">回答者:</label>
+                             {%ifnotequal  answer.personid None%}
+                             <label class="user_name">{{answer.personid}}</label>
+                             {%endifnotequal%}
+                             {%ifequal  answer.personid "None"%}
+                             <label class="user_name">匿名</label>
+                             {%endifequal%}
+                                                                            
+                        </a>
+                        <!-- <div class="vote">
+                                <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+                                <span itemprop="upvoteCount" class="vote-count-post ">1</span>
+                                <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+                        
+                        </div> -->
+                            <!-- 回答的编号 -->
+                            <div class="widget-vote ">
+                            <div class="triangle-up" ></div>
+                                
+                                 <span class="count"><label class="lable_class">{{forloop.counter}}</label></span>
+                                
+        
+                            <div class="triangle-down" ></div>
+                            </div>
+                           <p class="p_content">
+                                 &nbsp;&nbsp;{{answer.content}}
+                                 
+                           </p>
+                         
+                            
+                       </div>
+                   {%endfor%}
+                   </div>
              </div>
              
            <!--引入分页 -->
@@ -68,16 +68,16 @@
              <div id='next_pre_content'>
                 <span id="next_pre_box">
                      <!-- 如果当前是第一页，就不显示【上一页】链接 --> 
-                    <a href="?questionId={{answers.0.questionid}}&&curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageFirst" >首页  </a>
+                    <a href="?id={{answers.0.questionid}}&&curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageFirst" >首页  </a>
                     {% ifnotequal curPage 1 %}  
-                        <a href="?questionId={{answers.0.questionid}}&&curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageUp" > 上一页  </a>  
+                        <a href="?id={{answers.0.questionid}}&&curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageUp" > 上一页  </a>  
                     {% endifnotequal %}
                                                         第<label style="color:red;">{{ curPage }}</label>/{{ allPage }}页   
                      <!-- 如果当前是最后一页，就不显示【下一页】链接 -->  
                     {% ifnotequal curPage allPage %} 
-                        <a href="?questionId={{answers.0.questionid}}&&curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageDown">下一页  </a>  
+                        <a href="?id={{answers.0.questionid}}&&curPage={{ curPage }}&&allPage={{ allPage }}&&pageType=pageDown">下一页  </a>  
                     {% endifnotequal %}
-                    <a href="?questionId={{answers.0.questionid}}&&curPage={{ allPage }}&&allPage={{ allPage }}&&pageType=pageLast">尾页  </a>
+                    <a href="?id={{answers.0.questionid}}&&curPage={{ allPage }}&&allPage={{ allPage }}&&pageType=pageLast">尾页  </a>
                     </span> 
              </div>
          </div>
@@ -100,24 +100,26 @@
             <script type="text/javascript" src="../static/xhEditor/xheditor_lang/zh-cn.js"></script>
             <script type="text/javascript">
                 function answer(){
+                    var questionID = {{questionInfo.questionid|safe}};
+                    // alert(questionID)
                     var answerId = {{answers.0.id|safe}};
                     var userId = {{loginUser.id|safe}};
                     var Text = $('#answerText').val();
-                    ajax_answer(answerId,userId,Text);
+                    ajax_answer(answerId,userId,Text,questionID);
                 }
-                function ajax_answer(answerId,userId,Text){
+                function ajax_answer(answerId,userId,Text,questionID){
                     $.ajax({
-		                type:"POST",
-		                data:{'answerId':answerId,'userId':userId,'Text':Text},
-		                url:"/answerQuestion/",
-		                cache:false,
-		                dataType:"html",
-		                success:function(data,status,xml){
-		                	window.location.reload();//刷新当前页面
-		                },
-		                error:function(){
-		                    alert('回答失败')
-		            }
+                        type:"POST",
+                        data:{'answerId':answerId,'userId':userId,'Text':Text,'questionID':questionID},
+                        url:"/answerQuestion/",
+                        cache:false,
+                        dataType:"html",
+                        success:function(data,status,xml){
+                            window.location.reload();//刷新当前页面
+                        },
+                        error:function(){
+                            alert('回答失败')
+                    }
             });
                 }
             </script>

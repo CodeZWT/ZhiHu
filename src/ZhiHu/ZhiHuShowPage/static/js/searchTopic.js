@@ -60,7 +60,7 @@ function ask(inputText,topicName){
 		
 		},
 		error:function(){
-			alert('提问失败')
+			alert('你还没有选择话题呢！')
 		}
 	});
 }
