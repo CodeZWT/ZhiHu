@@ -7,13 +7,12 @@ Created on Dec 13, 2016
 #coding:utf-8
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.messages.storage import session
-from ZhiHuShowPage.models import Question, Person, Topicfollow, TopicIdIntroduction
+from ZhiHuShowPage.models import  Person, Topicfollow, TopicIdIntroduction
 import json
 from ZhiHuShowPage.models import Topic, TopicId
 import numpy
 
 from django.http.response import HttpResponse
-from ZhiHuShowPage.models import AnswerQuestion
 from ZhiHuShowPage.models import QuestionInfo
 from ZhiHuShowPage.models import Answer
 
@@ -137,33 +136,6 @@ def ask(request):
         newQuestion.fromtopicname = fromTopicName
         newQuestion.save()
         return HttpResponse('Success')
-# def answer(request):
-#     if request.method == 'POST':
-#         answerID = request.POST.get('answerId')
-#         userID = request.POST.get('userId')
-#         Text = request.POST.get('Text')
-#         questionText = request.POST.get('questionText')
-#         print answerID,userID,Text,questionText
-#         question = AnswerQuestion.objects.get(id = answerID)
-#         print question.id
-#         print 'ID'
-#         questionID = question.questionid
-#         questionName = question.questionname
-#         fromTopicId = question.fromtopicid
-#         fromTopicName = question.fromtopicname
-#         maxAnswerID = AnswerQuestion.objects.latest('answerid').answerid
-#         personID = Person.objects.get(id = userID).personid
-#         answerQuestion = AnswerQuestion()
-#         answerQuestion.questionid = questionID
-#         answerQuestion.answerid = int(maxAnswerID) + 1
-#         answerQuestion.personid = personID
-#         answerQuestion.questionname = questionName
-#         answerQuestion.fromtopicid = fromTopicId
-#         answerQuestion.fromtopicname = fromTopicName
-#         answerQuestion.content = Text
-#         answerQuestion.save()
-#         print int(maxAnswerID) + 1
-#         return HttpResponse('Success')
 def answer(request):
     if request.method == 'POST':
         answerID = request.POST.get('answerId')

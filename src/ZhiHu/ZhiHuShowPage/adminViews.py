@@ -1,13 +1,11 @@
 #coding=UTF-8
 from django.shortcuts import render, render_to_response, redirect
 from django.contrib.messages.storage import session
-from ZhiHuShowPage.models import Question, Person, Topicfollow, TopicIdIntroduction
+from ZhiHuShowPage.models import Person, Topicfollow, TopicIdIntroduction
 import json
 from ZhiHuShowPage.models import Topic, TopicId
 import numpy
-
 from django.http.response import HttpResponse
-from ZhiHuShowPage.models import AnswerQuestion
 from ZhiHuShowPage.models import QuestionInfo
 
 #跳转至用户管理后台中心

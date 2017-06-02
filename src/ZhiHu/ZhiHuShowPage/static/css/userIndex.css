@@ -170,6 +170,7 @@ a{
 .ask-conent{
     margin-left: 20px;
     float: left;
+    overflow:hidden;
     height: 30px;
     line-height: 30px;  
     width: 100px;

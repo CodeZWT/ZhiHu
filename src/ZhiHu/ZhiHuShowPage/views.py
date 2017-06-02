@@ -1,7 +1,6 @@
 #coding:utf-8
 from django.shortcuts import render, render_to_response, redirect
 from ZhiHuShowPage.models import QuestionInfo
-from ZhiHuShowPage.models import AnswerQuestion
 from ZhiHuShowPage.models import Person
 from django.contrib.messages.storage import session
 from ZhiHuShowPage.models import PersonTopic
@@ -10,18 +9,16 @@ from ZhiHuShowPage.models import RecommendTopic
 from ZhiHuShowPage.models import AucComplex
 import json
 from django.http.response import HttpResponse
-from ZhiHuShowPage.models import PersonEncoder
-import time
 from ZhiHuShowPage.models import TopicIdIntroduction
 import random
-from ZhiHuShowPage.models import Question
-from ZhiHuShowPage.models import TopicId
 from ZhiHuShowPage.models import Followees
-from ZhiHuShowPage.models import FollowEncoder
 from ZhiHuShowPage.models import Topicfollow
 from ZhiHuShowPage.models import Answer
-
-
+import time
+from PIL import Image
+import matplotlib.pyplot as plt
+import os
+from django.conf import settings
 #跳转到主页面
 def index(request):
     loginUser = request.session.get("loginUser", "none")
@@ -475,3 +472,31 @@ def searchName(request):
         return HttpResponse(json.dumps(names), content_type = 'application/json')
     else:
         return redirect('/index')
+
+#上传头像
+def uploadHeadImg(request):
+    if request.method == "POST":
+        loginUser = request.session.get("loginUser", "none")
+        if loginUser == 'none':
+            return redirect('/index')
+        else:
+            photo = request.FILES['photo']
+            if photo:
+                phototime = request.user.username + str(time.time()).split('.')[0]
+                photo_last = str(photo).split('.')[-1]
+                photoname = '/static/headImg/%s.%s' % (phototime, photo_last)
+                img = Image.open(photo)
+                img.save(os.path.dirname(__file__) + photoname)
+                photoname = '..' + photoname
+                print photoname
+                count = Person.objects.filter(id = loginUser.id).update(headimg = photoname)
+                if count:
+                    # 设置一个session，然后跳转到对应的页面，此处简易写写
+                    return redirect('/userInfo')              
+                else:
+                    return HttpResponse('上传失败')
+     
+            return HttpResponse('图片为空')
+    else:
+        return redirect('/index')
+    

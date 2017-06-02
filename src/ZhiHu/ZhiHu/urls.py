@@ -42,5 +42,6 @@ urlpatterns = [
     
     url(r'deleteFollows/', views.deleteFollows, name = 'deleteFollows'),
     url(r'searchName/', views.searchName, name = 'searchName'),
+    url(r'uploadHeadImg/', views.uploadHeadImg, name = 'uploadHeadImg'),
     
-]
+] 

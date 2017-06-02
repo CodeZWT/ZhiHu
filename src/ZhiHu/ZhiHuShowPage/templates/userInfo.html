@@ -144,8 +144,15 @@
 			
 			<div class="ProfileHeader-main">
 				<div class="ProfileHeader-img" >
-				
-				    <img alt="用户头像" src="../static/images/zhihu_photo.jpg" width="150" height="150">
+				    <img alt="用户头像" src="{{loginUser.headimg}}" width="150" height="150">
+				    <div>
+				              
+		               <form action="/uploadHeadImg/" method="POST" enctype="multipart/form-data">
+		                  <input name="photo" type="file" width="30px" value="修改头像">  
+		                  <button  type="submit">上传头像</button>
+		                </form>
+				                
+				     </div>
 				</div>
 				<div class="ProfileHeader-userInfo">
 				  <label style="font-size: 18px;color:#333;padding-bottom: 10px;font-weight: 800;">{{loginUser.personname}}</label><br/> 
