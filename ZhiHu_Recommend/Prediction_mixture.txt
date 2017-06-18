@@ -1,0 +1,60 @@
+Social_Data's is Shape :(275254L, 2L)
+Test_Data's is Shape :(33417L, 2L)
+UserItem_Data's is Shape :(121062L, 2L)
+
+
+Data To MatrixAdjacency_Soial ......
+    The first col's node length is :4238
+    The first col's max node is :4393
+    The second col's node length is :4298
+    The second col's max node is :4399
+MatrixAdjacency_Social's Shape is :(4400L, 4400L)
+Data To MatrixAdjacency_Test ......
+MatrixAdjacency_Test's Shape is :(4400L, 4400L)
+Data To MatrixAdjacency_UserItem ......
+    The first col's node length is :4079
+    The first col's max node is :4400
+    The second col's node length is :5952
+    The second col's max node is :8694
+MatrixAdjacency_UserItem's Shape is :(4400L, 8694L)
+MatrixAdjacency_Social
+[[ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  1.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  1.]
+ ..., 
+ [ 0.  1.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  1. ...,  0.  0.  0.]]
+MatrixAdjacency_Test
+[[ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ ..., 
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]]
+MatrixAdjacency_UserItem
+[[ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ ..., 
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]]
+[[ 27.   0.   0. ...,   0.   0.   0.]
+ [  0.  12.   0. ...,   0.   0.   0.]
+ [  0.   0.   6. ...,   0.   0.   0.]
+ ..., 
+ [  0.   0.   0. ...,  27.   0.   0.]
+ [  0.   0.   0. ...,   0.  37.   0.]
+ [  0.   0.   0. ...,   0.   0.   1.]]
+(4400L, 4400L)
+0.0
+Traceback (most recent call last):
+  File "E:\WorkSpace\ZhiHu_Recommend\Prediction_mixture.py", line 45, in <module>
+    INV_MatrixDegree_User = np.linalg.inv(MatrixDegree_User)
+  File "C:\Anaconda2\lib\site-packages\numpy\linalg\linalg.py", line 526, in inv
+    ainv = _umath_linalg.inv(a, signature=signature, extobj=extobj)
+  File "C:\Anaconda2\lib\site-packages\numpy\linalg\linalg.py", line 90, in _raise_linalgerror_singular
+    raise LinAlgError("Singular matrix")
+numpy.linalg.linalg.LinAlgError: Singular matrix
